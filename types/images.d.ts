@@ -4,6 +4,7 @@ Unauthorized copying of this file, via any medium, is strictly prohibited.
 Proprietary and confidential.  
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
-import userRoutes from "./user.routes.js";
-
-export default userRoutes;
+declare module "*.png" {
+  const value: string;
+  export default value;
+}
