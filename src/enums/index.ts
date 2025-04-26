@@ -4,4 +4,5 @@ Unauthorized copying of this file, via any medium, is strictly prohibited.
 Proprietary and confidential.  
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
-export { createUser } from "./user.controller.js";
+export { Department } from "./department.enum.js";
+export { Role } from "./role.enum.js";

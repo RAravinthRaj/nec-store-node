@@ -5,12 +5,8 @@ Proprietary and confidential.
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
 import mongoose, { Schema, Document } from "mongoose";
-
-export enum Role {
-  Admin = "admin",
-  Retailer = "retailer",
-  Customer = "customer",
-}
+import { Role } from "../enums/index.js";
+import { isValidDepartment } from "../utils/index.js";
 
 export interface IUser extends Document {
   email: string;
@@ -39,6 +35,10 @@ const UserSchema: Schema = new Schema<IUser>(
     department: {
       type: String,
       required: true,
+      validate: {
+        validator: isValidDepartment,
+        message: (props) => `${props} is not a valid department`,
+      },
     },
     roles: {
       type: [String],

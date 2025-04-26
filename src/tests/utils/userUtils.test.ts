@@ -7,7 +7,7 @@ Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import User from "../../models/user.model.js";
-import { Role } from "../../models/user.model.js";
+import { Role } from "../../enums/role.enum.js";
 
 let mongo: MongoMemoryServer;
 
@@ -84,7 +84,7 @@ describe("User Model - Utils Test", () => {
     const user = await User.create({
       rollNumber: " NEC321 ",
       name: " Aravinth ",
-      department: " IT ",
+      department: "IT",
       email: " aravinth@nec.edu ",
     });
 

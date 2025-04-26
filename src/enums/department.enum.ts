@@ -4,7 +4,12 @@ Unauthorized copying of this file, via any medium, is strictly prohibited.
 Proprietary and confidential.  
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
-declare module "*.png" {
-  const value: string;
-  export default value;
+export enum Department {
+  CSE = "CSE",
+  IT = "IT",
+  MECH = "MECH",
+  AIDS = "AI&DS",
+  CIVIL = "Civil",
+  EEE = "EEE",
+  ECE = "ECE",
 }
