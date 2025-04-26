@@ -4,24 +4,20 @@ Unauthorized copying of this file, via any medium, is strictly prohibited.
 Proprietary and confidential.  
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
-import mongoose from "mongoose";
-import dotenv from "dotenv";
-import logger from "./utils/logger.js";
-import app from "./app.js";
-
-dotenv.config();
-
-const PORT = process.env.PORT || 3000;
-const MONGOURL = process.env.MONGO_URL;
+import 'module-alias/register';
+import mongoose from 'mongoose';
+import logger from '@/src/utils/logger';
+import app from '@/src/app';
+import config from '@/src/config/config';
 
 mongoose
-  .connect(String(MONGOURL))
+  .connect(String(config.mongoURI))
   .then(() => {
-    console.log("Database connected successfully");
-    app.listen(PORT, () => {
-      logger.info(`Server running at http://localhost:${PORT}`);
+    logger.info('Database connected successfully');
+    app.listen(config.port, () => {
+      logger.info(`Server running at ${config.port}`);
     });
   })
   .catch((err) => {
-    logger.warn(`Error occurred: ${err}`);
+    logger.error(`Error occurred: ${err}`);
   });

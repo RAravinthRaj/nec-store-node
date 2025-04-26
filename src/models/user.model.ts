@@ -4,9 +4,9 @@ Unauthorized copying of this file, via any medium, is strictly prohibited.
 Proprietary and confidential.  
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
-import mongoose, { Schema, Document } from "mongoose";
-import { Role } from "../enums/index.js";
-import { isValidDepartment } from "../utils/index.js";
+import mongoose, { Schema, Document } from 'mongoose';
+import { isValidDepartment } from '@/src/utils/utils';
+import { Role } from '@/src/config/enum.config';
 
 export interface IUser extends Document {
   email: string;
@@ -48,7 +48,7 @@ const UserSchema: Schema = new Schema<IUser>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-export default mongoose.model<IUser>("User", UserSchema);
+export default mongoose.model<IUser>('User', UserSchema);

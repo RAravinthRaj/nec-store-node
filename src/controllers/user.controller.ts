@@ -4,47 +4,40 @@ Unauthorized copying of this file, via any medium, is strictly prohibited.
 Proprietary and confidential.  
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
-import { Request, Response } from "express";
-import { CustomRequestHandler } from "../../types/express.js";
-import User from "../models/user.model.js";
-import { errorHandler } from "../middlewares/errorHandler.js";
-
-// const is = require("is_js");
+import { NextFunction, Request, Response } from 'express';
+import { CustomRequestHandler } from '@/types/express';
+import User from '@/src/models/user.model';
+import validator from 'validator';
+import { Department } from '@/src/config/enum.config';
+import logger from '@/src/utils/logger';
 
 export const createUser: CustomRequestHandler = async (
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction,
 ) => {
   try {
-    const { rollNumber, name, department, email } = req.body;
+    const { rollNumber, name, department, email }: any = Object.fromEntries(
+      Object.entries(req.body).map(([key, value]) => [
+        key,
+        typeof value === 'string' ? value.trim() : value,
+      ]),
+    );
 
-    // if (
-    //   is.empty(rollNumber?.trim()) ||
-    //   is.empty(name?.trim()) ||
-    //   is.empty(department?.trim()) ||
-    //   (is.empty(email?.trim()) && is.not.email(email?.trim()))
-    // ) {
-    //   return res
-    //     .status(400)
-    //     .json({ error: "All fields must be non-empty strings." });
-    // }
-
-    // if (
-    //   is.not.string(rollNumber?.trim()) ||
-    //   is.not.string(name?.trim()) ||
-    //   is.not.string(department?.trim()) ||
-    //   is.not.string(email?.trim())
-    // ) {
-    //   return res
-    //     .status(400)
-    //     .json({ error: "All fields must be strings values only " });
-    // }
+    if (
+      validator.isEmpty(rollNumber) ||
+      validator.isEmpty(name) ||
+      validator.isEmpty(department) ||
+      (validator.isEmpty(email) && !validator.isEmail(email))
+    ) {
+      return res.status(400).json({ error: 'All fields must be non-empty strings.' });
+    }
 
     const user = new User({
-      rollNumber: rollNumber.trim(),
-      name: name.trim(),
-      department: department.trim(),
-      email: email.trim().toLowerCase(),
+      rollNumber: rollNumber,
+      name: name,
+      department: Department[department.toUpperCase() as keyof typeof Department],
+      email: email.toLowerCase(),
     });
 
     const savedUser = await user.save();
@@ -53,9 +46,11 @@ export const createUser: CustomRequestHandler = async (
   } catch (err: any) {
     if (err?.code === 11000) {
       const field = Object.keys(err?.keyPattern)[0];
-      return errorHandler(res, 409, `${field} already exists.`);
+      logger.error(`Error Code: ${400} -> ${field} already exists.`);
+
+      return res.status(400).json({ error: `${field} already exists.` });
     }
 
-    return errorHandler(res, 500, `${err}`);
+    next(err);
   }
 };

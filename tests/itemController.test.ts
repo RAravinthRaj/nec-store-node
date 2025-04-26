@@ -4,10 +4,10 @@ Unauthorized copying of this file, via any medium, is strictly prohibited.
 Proprietary and confidential.  
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
-import mongoose from "mongoose";
-import { MongoMemoryServer } from "mongodb-memory-server";
-import User from "../../models/user.model.js";
-import { Role } from "../../enums/role.enum.js";
+import mongoose from 'mongoose';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import User from '../src/models/user.model';
+import { Role } from '../src/config/enum.config';
 
 let mongo: MongoMemoryServer;
 
@@ -27,25 +27,25 @@ afterEach(async () => {
   await User.deleteMany({});
 });
 
-describe("User Model - Utils Test", () => {
-  it("should create a valid user with default role", async () => {
+describe('User Model - Utils Test', () => {
+  it('should create a valid user with default role', async () => {
     const user = await User.create({
-      rollNumber: "NEC123",
-      name: "Aravinth Raj",
-      department: "CSE",
-      email: "aravinth@nec.edu.in",
+      rollNumber: 'NEC123',
+      name: 'Aravinth Raj',
+      department: 'CSE',
+      email: 'aravinth@nec.edu.in',
     });
 
     expect(user.roles).toEqual([Role.Customer]);
   });
 
-  it("should not create a user with empty fields", async () => {
+  it('should not create a user with empty fields', async () => {
     try {
       await User.create({
-        rollNumber: "",
-        name: "",
-        department: "",
-        email: "",
+        rollNumber: '',
+        name: '',
+        department: '',
+        email: '',
       });
     } catch (err: any) {
       expect(err).toBeDefined();
@@ -56,21 +56,21 @@ describe("User Model - Utils Test", () => {
     }
   });
 
-  it("should not allow duplicate email", async () => {
+  it('should not allow duplicate email', async () => {
     await User.create({
-      rollNumber: "NEC001",
-      name: "User1",
-      department: "IT",
-      email: "user@example.com",
+      rollNumber: 'NEC001',
+      name: 'User1',
+      department: 'IT',
+      email: 'user@example.com',
     });
 
     let error;
     try {
       await User.create({
-        rollNumber: "NEC002",
-        name: "User2",
-        department: "ECE",
-        email: "user@example.com",
+        rollNumber: 'NEC002',
+        name: 'User2',
+        department: 'ECE',
+        email: 'user@example.com',
       });
     } catch (err: any) {
       error = err;
@@ -80,14 +80,14 @@ describe("User Model - Utils Test", () => {
     expect(error.code).toBe(11000);
   });
 
-  it("should trim whitespace and store clean data", async () => {
+  it('should trim whitespace and store clean data', async () => {
     const user = await User.create({
-      rollNumber: " NEC321 ",
-      name: " Aravinth ",
-      department: "IT",
-      email: " aravinth@nec.edu ",
+      rollNumber: ' NEC321 ',
+      name: ' Aravinth ',
+      department: 'IT',
+      email: ' aravinth@nec.edu ',
     });
 
-    expect(user.rollNumber).toBe(" NEC321 ");
+    expect(user.rollNumber).toBe(' NEC321 ');
   });
 });

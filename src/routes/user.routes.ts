@@ -4,11 +4,11 @@ Unauthorized copying of this file, via any medium, is strictly prohibited.
 Proprietary and confidential.  
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
-import express from "express";
-import { createUser } from "../controllers/index.js";
+import { Router } from 'express';
+import { createUser } from '@/src/controllers/user.controller';
 
-const router = express.Router();
+const router = Router();
 
-router.post("/signup", createUser);
+router.post('/signup', createUser);
 
 export default router;
