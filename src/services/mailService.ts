@@ -1,3 +1,9 @@
+/* 
+© 2025 Aravinth Raj R. All rights reserved.
+Unauthorized copying of this file, via any medium, is strictly prohibited.
+Proprietary and confidential.  
+Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
+*/
 import FormData from 'form-data';
 import Mailgun from 'mailgun.js';
 import config from '@/src/config/config';
@@ -5,7 +11,7 @@ import logger from '../utils/logger';
 
 export interface SendOTPParams {
   email: string;
-  name: string;
+  userName: string;
   otp: string;
 }
 
@@ -36,17 +42,17 @@ export class MailService implements IMailService {
 
   public async sendOTP(args: SendOTPParams) {
     try {
-      const { email, name, otp } = args;
+      const { email, userName, otp } = args;
 
       const result = await this.mg.messages.create(config.mailgunDomain, {
         from: `NEC Store <postmaster@${config.mailgunDomain}>`,
-        to: [`${name} <${email}>`],
+        to: [`${userName} <${email}>`],
         subject: 'OTP Verification Code',
         template: 'otp-sender',
-        'h:X-Mailgun-Variables': JSON.stringify({ userName: name, OTP: otp }),
+        'h:X-Mailgun-Variables': JSON.stringify({ userName, OTP: otp }),
       });
 
-      logger.info(`Email Sent Successfully ${email} - ${otp}`);
+      logger.info(`Email Sent Successfully to ${email} - ${otp}`);
 
       return result;
     } catch (error) {

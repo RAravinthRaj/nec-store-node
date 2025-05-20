@@ -1,0 +1,34 @@
+/*
+© 2025 Aravinth Raj R. All rights reserved.
+Unauthorized copying of this file, via any medium, is strictly prohibited.
+Proprietary and confidential.  
+Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
+*/
+
+import jwt from 'jsonwebtoken';
+import config from '@/src/config/config';
+
+class JwtService {
+  private static instance: JwtService;
+
+  private constructor() {}
+
+  public static getInstance(): JwtService {
+    if (!JwtService.instance) {
+      JwtService.instance = new JwtService();
+    }
+    return JwtService.instance;
+  }
+
+  public generateToken(payload: object): string {
+    return jwt.sign(payload, config.jwtSecretKey, {
+      expiresIn: config.jwtExpiryTime,
+    });
+  }
+
+  public verifyToken(token: string): any {
+    return jwt.verify(token, config.jwtSecretKey);
+  }
+}
+
+export default JwtService;

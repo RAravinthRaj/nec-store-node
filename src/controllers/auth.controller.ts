@@ -1,3 +1,9 @@
+/* 
+© 2025 Aravinth Raj R. All rights reserved.
+Unauthorized copying of this file, via any medium, is strictly prohibited.
+Proprietary and confidential.  
+Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
+*/
 import { Request, Response, NextFunction } from 'express';
 import validator from 'validator';
 import User from '@/src/models/user.model';
@@ -20,20 +26,28 @@ export const signIn: CustomRequestHandler = async (
     );
 
     if (validator.isEmpty(email) || !validator.isEmail(email)) {
-      return res.status(400).json({ error: 'A valid email is required.' });
+      return res.status(400).json({ error: 'Invalid email.' });
     }
 
     const user = await User.findOne({ email });
     const otpStore = OtpStore.getInstance();
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found. Please sign up.' });
+      return res.status(404).json({ message: 'User not found.' });
     }
 
     if (otpStore.has(email)) {
       const retrievedOtp = otpStore.get(email);
-      logger.info('OTP already exists ' + email + retrievedOtp);
-      return res.status(200).json({ message: 'OTP has already sent to your mail.' });
+
+      logger.info('OTP already exists');
+
+      await MailService.getInstance().sendOTP({
+        email: user.email,
+        userName: user.name,
+        otp: retrievedOtp || '',
+      });
+
+      return res.status(200).json({ message: 'OTP sent successfully.' });
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -41,13 +55,13 @@ export const signIn: CustomRequestHandler = async (
 
     await MailService.getInstance().sendOTP({
       email: user.email,
-      name: user.name,
+      userName: user.name,
       otp,
     });
 
-    return res.status(200).json({ message: 'OTP sent to your email.' });
+    return res.status(200).json({ message: 'OTP sent successfully.' });
   } catch (err) {
-    logger.error(`SignIn Error: ${err}`);
+    logger.error(`Error in SignIn : ${err}`);
     next(err);
   }
 };

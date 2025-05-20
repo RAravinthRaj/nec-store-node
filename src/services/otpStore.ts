@@ -1,3 +1,9 @@
+/* 
+© 2025 Aravinth Raj R. All rights reserved.
+Unauthorized copying of this file, via any medium, is strictly prohibited.
+Proprietary and confidential.  
+Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
+*/
 export interface OtpEntry {
   otp: string;
   expiresAt: number;
@@ -32,7 +38,9 @@ class OtpStore implements IOtpStore {
 
   public get(email: string): string | null {
     const entry = this.store.get(email);
-    if (!entry) return null;
+    if (!entry) {
+      return null;
+    }
 
     if (Date.now() > entry.expiresAt) {
       this.store.delete(email);
@@ -43,7 +51,9 @@ class OtpStore implements IOtpStore {
   }
 
   public delete(email: string): void {
-    this.store.delete(email);
+    if (this.has(email)) {
+      this.store.delete(email);
+    }
   }
 
   public has(email: string): boolean {

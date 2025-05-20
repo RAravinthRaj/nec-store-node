@@ -16,6 +16,9 @@ interface Config {
   mailgunApiKey: string;
   mailgunDomain: string;
   mailgunClientUrl: string;
+
+  jwtSecretKey: string;
+  jwtExpiryTime: any;
 }
 
 const config: Config = {
@@ -26,6 +29,9 @@ const config: Config = {
   mailgunApiKey: process.env.MAILGUN_API_KEY || '',
   mailgunDomain: process.env.MAILGUN_DOMAIN || '',
   mailgunClientUrl: process.env.MAILGUN_CLIENTURL || '',
+
+  jwtSecretKey: process.env.JWT_SECRET || '',
+  jwtExpiryTime: process.env.JWT_EXPIRES_IN || ' ',
 };
 
 export default config;

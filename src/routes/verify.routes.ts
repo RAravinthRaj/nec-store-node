@@ -5,10 +5,10 @@ Proprietary and confidential.
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
 import { Router } from 'express';
-import { signIn } from '@/src/controllers/auth.controller';
+import { verifyOtp } from '@/src/controllers/verify.controller';
 
 const router = Router();
 
-router.post('/signin', signIn);
+router.post('/verify', verifyOtp);
 
 export default router;
