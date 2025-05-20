@@ -12,12 +12,20 @@ interface Config {
   port: number;
   nodeEnv: string;
   mongoURI: string;
+
+  mailgunApiKey: string;
+  mailgunDomain: string;
+  mailgunClientUrl: string;
 }
 
 const config: Config = {
   port: Number(process.env.PORT) || 3000,
   nodeEnv: process.env.NODE_ENV || 'development',
   mongoURI: process.env.MONGO_URL || '',
+
+  mailgunApiKey: process.env.MAILGUN_API_KEY || '',
+  mailgunDomain: process.env.MAILGUN_DOMAIN || '',
+  mailgunClientUrl: process.env.MAILGUN_CLIENTURL || '',
 };
 
 export default config;
