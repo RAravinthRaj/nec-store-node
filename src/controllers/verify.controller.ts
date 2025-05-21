@@ -57,7 +57,6 @@ export const verifyOtp: CustomRequestHandler = async (
       userName: user.name,
       rollNumber: user.rollNumber,
       department: user.department,
-      roles: user.roles,
     });
 
     return res.status(200).json({ message: 'OTP verified successfully.', accessToken: token });
