@@ -58,7 +58,7 @@ describe('User Model - Utils Test', () => {
 
   it('should not allow duplicate email', async () => {
     await User.create({
-      rollNumber: 'NEC001',
+      rollNumber: 'NEC002',
       name: 'User1',
       department: 'IT',
       email: 'user@example.com',
