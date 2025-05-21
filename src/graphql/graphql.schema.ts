@@ -7,15 +7,29 @@ Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 import { mergeTypeDefs } from '@graphql-tools/merge';
 
 // TypeDefs
-import { roleTypeDefs, userTypeDefs } from '@/src/graphql/typeDefs';
+import {
+  roleTypeDefs,
+  userTypeDefs,
+  getUserTypeDefs,
+  updateUserTypeDefs,
+} from '@/src/graphql/typeDefs';
 
 // Resolvers
-import { getRoles, getAllUsers } from '@/src/graphql/resolvers';
+import { getRoles, getAllUsers, getUser, updateUser } from '@/src/graphql/resolvers';
 
-export const typeDefs = mergeTypeDefs([roleTypeDefs, userTypeDefs]);
+export const typeDefs = mergeTypeDefs([
+  roleTypeDefs,
+  userTypeDefs,
+  getUserTypeDefs,
+  updateUserTypeDefs,
+]);
 export const resolvers = {
   Query: {
     getRoles,
     getAllUsers,
+    getUser,
+  },
+  Mutation: {
+    updateUser,
   },
 };
