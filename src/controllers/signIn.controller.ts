@@ -10,6 +10,7 @@ import User from '@/src/models/user.model';
 import { MailService } from '@/src/services/mail.service';
 import { OtpStore } from '@/src/services/otpStore.service';
 import { CustomRequestHandler } from '@/types/express';
+import { UserStatus } from '../config/enum.config';
 import logger from '@/src/utils/logger';
 
 export const signIn: CustomRequestHandler = async (
@@ -34,6 +35,10 @@ export const signIn: CustomRequestHandler = async (
 
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
+    }
+
+    if (user.status === UserStatus.Suspended) {
+      return res.status(403).json({ message: 'Account is temporarily Suspended. Contact Admin.' });
     }
 
     if (otpStore.has(email)) {

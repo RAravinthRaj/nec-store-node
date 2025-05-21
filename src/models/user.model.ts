@@ -6,7 +6,7 @@ Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
 import mongoose, { Schema, Document } from 'mongoose';
 import { isValidDepartment } from '@/src/utils/utils';
-import { Role } from '@/src/config/enum.config';
+import { Role, UserStatus } from '@/src/config/enum.config';
 
 export interface IUser extends Document {
   email: string;
@@ -14,6 +14,8 @@ export interface IUser extends Document {
   name: string;
   department: string;
   roles?: Role[];
+  profilePicture?: string;
+  status: UserStatus;
 }
 
 const UserSchema: Schema = new Schema<IUser>(
@@ -44,6 +46,15 @@ const UserSchema: Schema = new Schema<IUser>(
       type: [String],
       enum: Object.values(Role),
       default: [Role.Customer],
+    },
+    profilePicture: {
+      type: String,
+      default: null,
+    },
+    status: {
+      type: String,
+      enum: Object.values(UserStatus),
+      default: UserStatus.Active,
     },
   },
   {

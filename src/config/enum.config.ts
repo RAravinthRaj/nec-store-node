@@ -19,3 +19,8 @@ export enum Role {
   Retailer = 'retailer',
   Customer = 'customer',
 }
+
+export enum UserStatus {
+  Active = 'active',
+  Suspended = 'suspended',
+}
