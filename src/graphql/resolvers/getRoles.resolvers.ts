@@ -14,12 +14,7 @@ interface Context {
 export const getRoles = async (_: any, __: any, context: Context): Promise<string[]> => {
   const email = (context.req as any).user?.email;
 
-  if (!email) {
-    throw new Error('User not authenticated.');
-  }
-
   const user = await User.findOne({ email });
-
   if (!user) {
     throw new Error('User not found');
   }
