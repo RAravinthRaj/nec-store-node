@@ -60,8 +60,8 @@ export const verifyOtp: CustomRequestHandler = async (
     });
 
     return res.status(200).json({ message: 'OTP verified successfully.', accessToken: token });
-  } catch (err) {
-    logger.error(`Error in OTP verification: ${err}`);
+  } catch (err: any) {
+    logger.error(`Error in verifyOtp: ${err}`);
     next(err);
   }
 };

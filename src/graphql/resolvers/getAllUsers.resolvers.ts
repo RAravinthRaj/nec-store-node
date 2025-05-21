@@ -4,6 +4,7 @@ Unauthorized copying of this file, via any medium, is strictly prohibited.
 Proprietary and confidential.  
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
+import { Role } from '@/src/config/enum.config';
 import User from '@/src/models/user.model';
 import { Request } from 'express';
 
@@ -11,49 +12,47 @@ interface Context {
   req: Request;
 }
 
-export const getAllUsers = {
-  getAllUsers: async (
-    {
-      name,
-      email,
-      skip = 0,
-      limit,
-      orderBy = 'ASC',
-    }: {
-      name?: string;
-      email?: string;
-      skip?: number;
-      limit?: number;
-      orderBy?: 'ASC' | 'DESC';
-    },
-    context: Context,
-  ) => {
-    const roles: string[] = (context.req as any).user?.roles;
+interface GetAllUsersArgs {
+  name?: string;
+  email?: string;
+  skip?: number;
+  limit?: number;
+  orderBy?: 'ASC' | 'DESC';
+}
 
-    if (!roles || !roles.includes('admin')) {
-      throw new Error(`You don't have enough permission to perform this operation.`);
-    }
+export const getAllUsers = async (
+  _: any,
+  { name, email, skip = 0, limit, orderBy = 'ASC' }: GetAllUsersArgs,
+  context: Context,
+) => {
+  const inputEmail: string = (context.req as any).user?.email;
 
-    if (limit == null) {
-      limit = skip + 10;
-    }
+  const user = await User.findOne({ email: inputEmail });
+  if (!user) {
+    throw new Error('User not found.');
+  }
 
-    const query: any = {};
+  if (!user?.roles || !user?.roles.includes(Role.Admin)) {
+    throw new Error(`You don't have enough permission to perform this operation.`);
+  }
 
-    if (name?.trim()) {
-      query.name = { $regex: name.trim(), $options: 'i' };
-    }
+  const query: any = {};
 
-    if (email?.trim()) {
-      query.email = { $regex: email.trim(), $options: 'i' };
-    }
+  if (name?.trim()) {
+    query.name = { $regex: name.trim(), $options: 'i' };
+  }
 
-    const users = await User.find(query)
-      .select('email rollNumber name roles')
-      .sort({ name: orderBy === 'ASC' ? 1 : -1 })
-      .skip(skip)
-      .limit(limit);
+  if (email?.trim()) {
+    query.email = { $regex: email.trim(), $options: 'i' };
+  }
 
-    return users;
-  },
+  const finalLimit = limit ?? 10;
+
+  const users = await User.find(query)
+    .select('email rollNumber name roles')
+    .sort({ name: orderBy === 'ASC' ? 1 : -1 })
+    .skip(skip)
+    .limit(finalLimit);
+
+  return users;
 };

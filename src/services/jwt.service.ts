@@ -17,6 +17,7 @@ export class JwtService {
     if (!JwtService.instance) {
       JwtService.instance = new JwtService();
     }
+
     return JwtService.instance;
   }
 

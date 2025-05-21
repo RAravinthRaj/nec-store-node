@@ -9,7 +9,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export interface Config {
-  port: number;
+  restPort: number;
+  graphqlPort: number;
+
   nodeEnv: string;
   mongoURI: string;
 
@@ -22,13 +24,15 @@ export interface Config {
 }
 
 export const config: Config = {
-  port: Number(process.env.PORT) || 3000,
+  restPort: Number(process.env.REST_PORT) || 3000,
+  graphqlPort: Number(process.env.GRAPHQL_PORT) || 3001,
+
   nodeEnv: process.env.NODE_ENV || 'development',
   mongoURI: process.env.MONGO_URL || '',
 
   mailgunApiKey: process.env.MAILGUN_API_KEY || '',
   mailgunDomain: process.env.MAILGUN_DOMAIN || '',
-  mailgunClientUrl: process.env.MAILGUN_CLIENTURL || '',
+  mailgunClientUrl: process.env.MAILGUN_CLIENT_URL || '',
 
   jwtSecretKey: process.env.JWT_SECRET || '',
   jwtExpiryTime: process.env.JWT_EXPIRES_IN || ' ',

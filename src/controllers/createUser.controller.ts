@@ -5,9 +5,9 @@ Proprietary and confidential.
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
 import { NextFunction, Request, Response } from 'express';
+import validator from 'validator';
 import { CustomRequestHandler } from '@/types/express';
 import User from '@/src/models/user.model';
-import validator from 'validator';
 import { Department } from '@/src/config/enum.config';
 import logger from '@/src/utils/logger';
 
@@ -51,6 +51,7 @@ export const createUser: CustomRequestHandler = async (
       return res.status(400).json({ error: `${field} already exists.` });
     }
 
+    logger.error(`Error in createUser : ${err}`);
     next(err);
   }
 };

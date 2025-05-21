@@ -11,20 +11,18 @@ interface Context {
   req: Request;
 }
 
-export const getRoles = {
-  getRoles: async (_: any, context: Context) => {
-    const email = (context.req as any).user?.email;
+export const getRoles = async (_: any, __: any, context: Context): Promise<string[]> => {
+  const email = (context.req as any).user?.email;
 
-    if (!email) {
-      throw new Error('User not found');
-    }
+  if (!email) {
+    throw new Error('User not authenticated.');
+  }
 
-    const user = await User.findOne({ email });
+  const user = await User.findOne({ email });
 
-    if (!user) {
-      throw new Error('User not found');
-    }
+  if (!user) {
+    throw new Error('User not found');
+  }
 
-    return user.roles;
-  },
+  return user?.roles || [];
 };

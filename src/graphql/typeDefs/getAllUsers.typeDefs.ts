@@ -4,9 +4,9 @@ Unauthorized copying of this file, via any medium, is strictly prohibited.
 Proprietary and confidential.  
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
-import { buildSchema } from 'graphql';
+import gql from 'graphql-tag';
 
-export const userSchema = buildSchema(`
+export const userTypeDefs = gql`
   enum OrderBy {
     ASC
     DESC
@@ -20,12 +20,6 @@ export const userSchema = buildSchema(`
   }
 
   type Query {
-    getAllUsers(
-      name: String
-      email: String
-      skip: Int
-      limit: Int
-      orderBy: OrderBy
-    ): [User!]!
+    getAllUsers(name: String, email: String, skip: Int, limit: Int, orderBy: OrderBy): [User!]!
   }
-`);
+`;

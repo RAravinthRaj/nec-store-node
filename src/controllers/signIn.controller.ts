@@ -10,7 +10,7 @@ import User from '@/src/models/user.model';
 import { MailService } from '@/src/services/mail.service';
 import { OtpStore } from '@/src/services/otpStore.service';
 import { CustomRequestHandler } from '@/types/express';
-import { UserStatus } from '../config/enum.config';
+import { UserStatus } from '@/src/config/enum.config';
 import logger from '@/src/utils/logger';
 
 export const signIn: CustomRequestHandler = async (
@@ -65,8 +65,8 @@ export const signIn: CustomRequestHandler = async (
     });
 
     return res.status(200).json({ message: 'OTP sent successfully.' });
-  } catch (err) {
-    logger.error(`Error in SignIn : ${err}`);
+  } catch (err: any) {
+    logger.error(`Error in signIn : ${err}`);
     next(err);
   }
 };

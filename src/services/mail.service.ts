@@ -53,11 +53,10 @@ export class MailService implements IMailService {
       });
 
       logger.info(`Email Sent Successfully to ${email} - ${otp}`);
-
       return result;
-    } catch (error) {
-      logger.error('Mailgun Error:', error);
-      throw error;
+    } catch (err: any) {
+      logger.error('Error in mailService:', err);
+      throw err;
     }
   }
 }
