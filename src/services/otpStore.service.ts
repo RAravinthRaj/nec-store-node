@@ -16,7 +16,7 @@ export interface IOtpStore {
   has(email: string): boolean | null;
 }
 
-class OtpStore implements IOtpStore {
+export class OtpStore implements IOtpStore {
   private static instance: OtpStore;
   private store: Map<string, OtpEntry>;
 
@@ -60,5 +60,3 @@ class OtpStore implements IOtpStore {
     return this.get(email) !== null;
   }
 }
-
-export default OtpStore;

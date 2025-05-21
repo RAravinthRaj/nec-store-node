@@ -8,7 +8,7 @@ import 'module-alias/register';
 import mongoose from 'mongoose';
 import logger from '@/src/utils/logger';
 import app from '@/src/app';
-import config from '@/src/config/config';
+import { config } from '@/src/config/config';
 
 mongoose
   .connect(String(config.mongoURI))

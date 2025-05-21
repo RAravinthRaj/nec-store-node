@@ -7,9 +7,9 @@ Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 import { Request, Response, NextFunction } from 'express';
 import validator from 'validator';
 import User from '@/src/models/user.model';
-import OtpStore from '@/src/services/otpStore';
+import { OtpStore } from '@/src/services/otpStore.service';
 import { CustomRequestHandler } from '@/types/express';
-import JwtService from '@/src/services/jwtService';
+import { JwtService } from '@/src/services/jwt.service';
 import logger from '@/src/utils/logger';
 
 export const verifyOtp: CustomRequestHandler = async (

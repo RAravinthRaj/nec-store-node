@@ -8,7 +8,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-interface Config {
+export interface Config {
   port: number;
   nodeEnv: string;
   mongoURI: string;
@@ -21,7 +21,7 @@ interface Config {
   jwtExpiryTime: any;
 }
 
-const config: Config = {
+export const config: Config = {
   port: Number(process.env.PORT) || 3000,
   nodeEnv: process.env.NODE_ENV || 'development',
   mongoURI: process.env.MONGO_URL || '',
@@ -33,5 +33,3 @@ const config: Config = {
   jwtSecretKey: process.env.JWT_SECRET || '',
   jwtExpiryTime: process.env.JWT_EXPIRES_IN || ' ',
 };
-
-export default config;

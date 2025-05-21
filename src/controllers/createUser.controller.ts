@@ -30,7 +30,7 @@ export const createUser: CustomRequestHandler = async (
       validator.isEmpty(department) ||
       (validator.isEmpty(email) && !validator.isEmail(email))
     ) {
-      return res.status(400).json({ error: 'All fields must be non-empty strings.' });
+      return res.status(400).json({ error: 'All fields must be non-empty.' });
     }
 
     const user = new User({

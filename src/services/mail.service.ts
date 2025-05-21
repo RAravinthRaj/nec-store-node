@@ -6,8 +6,8 @@ Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
 import FormData from 'form-data';
 import Mailgun from 'mailgun.js';
-import config from '@/src/config/config';
-import logger from '../utils/logger';
+import { config } from '@/src/config/config';
+import logger from '@/src/utils/logger';
 
 export interface SendOTPParams {
   email: string;
@@ -61,5 +61,3 @@ export class MailService implements IMailService {
     }
   }
 }
-
-export default MailService;

@@ -7,8 +7,8 @@ Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 import { Request, Response, NextFunction } from 'express';
 import validator from 'validator';
 import User from '@/src/models/user.model';
-import MailService from '@/src/services/mailService';
-import OtpStore from '@/src/services/otpStore';
+import { MailService } from '@/src/services/mail.service';
+import { OtpStore } from '@/src/services/otpStore.service';
 import { CustomRequestHandler } from '@/types/express';
 import logger from '@/src/utils/logger';
 
