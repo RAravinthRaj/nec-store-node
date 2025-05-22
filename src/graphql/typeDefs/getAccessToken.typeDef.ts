@@ -8,7 +8,6 @@ import gql from 'graphql-tag';
 
 export const accessTokenTypeDefs = gql`
   type AccessTokenResponse {
-    success: Boolean!
     token: String
   }
 

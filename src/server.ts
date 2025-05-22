@@ -15,8 +15,9 @@ import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled';
 import { authenticateJWT } from '@/src/middlewares/authenticateJwt.middleware';
+import { accessControl } from '@/src/middlewares/accessControl.middleware';
 import { resolvers, typeDefs } from '@/src/graphql/graphql.schema';
-import router from '@/src/routes/rest.routes';
+import router from '@/src/routes/rest.route';
 import { config } from '@/src/config/config';
 import logger from '@/src/utils/logger';
 
@@ -61,6 +62,7 @@ async function startGraphqlServer() {
   app.use(
     '/graphql',
     authenticateJWT,
+    accessControl,
     expressMiddleware(graphqlServer, {
       context: async ({ req }) => ({ req }),
     }),

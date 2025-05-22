@@ -4,9 +4,9 @@ Unauthorized copying of this file, via any medium, is strictly prohibited.
 Proprietary and confidential.  
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
-export * from './getRoles.typeDefs';
-export * from './getAllUsers.typeDefs';
-export * from './getUser.typeDefs';
-export * from './updateUser.typeDefs';
-export * from './getAccessToken.typeDefs';
-export * from './enum.typeDefs';
+export * from './getRoles.typeDef';
+export * from './getAllUsers.typeDef';
+export * from './getUser.typeDef';
+export * from './updateUser.typeDef';
+export * from './getAccessToken.typeDef';
+export * from './enum.typeDef';

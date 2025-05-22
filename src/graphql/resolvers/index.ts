@@ -4,8 +4,8 @@ Unauthorized copying of this file, via any medium, is strictly prohibited.
 Proprietary and confidential.  
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
-export * from './getRoles.resolvers';
-export * from './getAllUsers.resolvers';
-export * from './getUser.resolvers';
-export * from './updateUser.resolvers';
-export * from './getAccessToken.resolvers';
+export * from './getRoles.resolver';
+export * from './getAllUsers.resolver';
+export * from './getUser.resolver';
+export * from './updateUser.resolver';
+export * from './getAccessToken.resolver';

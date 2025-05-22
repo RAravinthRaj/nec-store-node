@@ -101,7 +101,6 @@ export const updateUser = async (
   }
 
   return {
-    success: true,
     message: 'User updated successfully.',
     token: newToken,
   };

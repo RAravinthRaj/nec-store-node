@@ -13,7 +13,6 @@ export const updateUserTypeDefs = gql`
   }
 
   type UpdateUserResponse {
-    success: Boolean!
     message: String!
     token: String
   }
