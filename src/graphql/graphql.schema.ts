@@ -8,12 +8,16 @@ import { mergeTypeDefs } from '@graphql-tools/merge';
 
 // TypeDefs
 import {
-  roleTypeDefs,
-  userTypeDefs,
-  getUserTypeDefs,
-  updateUserTypeDefs,
-  accessTokenTypeDefs,
-  enumTypeDefs,
+  enumTypeDef,
+  modelTypeDef,
+  getRolesTypeDef,
+  getAllUsersTypeDef,
+  getUserTypeDef,
+  updateUserTypeDef,
+  getAccessTokenTypeDef,
+  addCategoryTypeDef,
+  getAllCategoriesTypeDef,
+  addProductTypeDef,
 } from '@/src/graphql/typeDefs';
 
 // Resolvers
@@ -23,24 +27,35 @@ import {
   getUser,
   updateUser,
   getAccessToken,
+  addCategory,
+  addProduct,
+  getAllCategories,
 } from '@/src/graphql/resolvers';
 
 export const typeDefs = mergeTypeDefs([
-  enumTypeDefs,
-  roleTypeDefs,
-  userTypeDefs,
-  getUserTypeDefs,
-  updateUserTypeDefs,
-  accessTokenTypeDefs,
+  enumTypeDef,
+  modelTypeDef,
+  getRolesTypeDef,
+  getAllUsersTypeDef,
+  getUserTypeDef,
+  updateUserTypeDef,
+  getAccessTokenTypeDef,
+  addCategoryTypeDef,
+  addProductTypeDef,
+  getAllCategoriesTypeDef,
 ]);
+
 export const resolvers = {
   Query: {
     getRoles,
     getAllUsers,
     getUser,
     getAccessToken,
+    getAllCategories,
   },
   Mutation: {
     updateUser,
+    addCategory,
+    addProduct,
   },
 };

@@ -8,13 +8,14 @@ import { Request } from 'express';
 import User from '@/src/models/user.model';
 import { JwtService } from '@/src/services/jwt.service';
 import { Role, UserStatus } from '@/src/config/enum.config';
+import logger from '@/src/utils/logger';
 
 interface Context {
   req: Request;
 }
 
 interface UpdateUserInput {
-  id?: string;
+  id: string;
   email?: string;
   name?: string;
   rollNumber?: string;
@@ -29,79 +30,84 @@ export const updateUser = async (
   { input }: { input: UpdateUserInput },
   context: Context,
 ) => {
-  const currentRole = (context.req as any).user?.role;
-  if (!currentRole) {
-    throw new Error('Unauthorized: No token provided.');
-  }
+  try {
+    const currentRole = (context.req as any).user?.role;
+    if (!currentRole) {
+      throw new Error('Unauthorized: No token provided.');
+    }
 
-  const currentUserId = (context.req as any).user?.id;
-  const tokenUser = await User.findById(currentUserId);
+    const currentUserId = (context.req as any).user?.id;
+    const tokenUser = await User.findById(currentUserId);
 
-  if (!tokenUser) throw new Error('User not found.');
+    if (!tokenUser) throw new Error('User not found.');
 
-  const isAdmin = currentRole === Role.Admin;
-  let targetUser = tokenUser;
+    const isAdmin = currentRole === Role.Admin;
+    let targetUser = tokenUser;
 
-  if (!isAdmin && (input.roles !== undefined || input.status !== undefined)) {
-    throw new Error("You don't have enough permission to perform this operation.");
-  }
-
-  if (input.id && input.id !== tokenUser.id) {
-    if (!isAdmin) {
+    if (!isAdmin && (input.roles !== undefined || input.status !== undefined)) {
       throw new Error("You don't have enough permission to perform this operation.");
     }
 
-    const foundUser = await User.findById(input.id);
-    if (!foundUser) throw new Error('User not found.');
-    targetUser = foundUser;
-  }
+    if (input.id && input.id !== tokenUser.id) {
+      if (!isAdmin) {
+        throw new Error("You don't have enough permission to perform this operation.");
+      }
 
-  const fieldsToUpdate: Partial<UpdateUserInput> = {
-    ...(input.name && { name: input.name }),
-    ...(input.email && { email: input.email }),
-    ...(input.rollNumber && { rollNumber: input.rollNumber }),
-    ...(input.department && { department: input.department }),
-    ...(input.profilePicture !== undefined && { profilePicture: input.profilePicture }),
-  };
-
-  if (isAdmin && input.id && input.id !== tokenUser.id) {
-    if (input.roles) {
-      const oldRoles = targetUser.roles ?? [];
-      const mergedRoles = Array.from(new Set([...oldRoles, ...input.roles]));
-      fieldsToUpdate.roles = mergedRoles;
+      const foundUser = await User.findById(input.id);
+      if (!foundUser) throw new Error('User not found.');
+      targetUser = foundUser;
     }
 
-    if (input.status) {
-      fieldsToUpdate.status = input.status;
-    }
-  }
-
-  const updatedUser = await User.findByIdAndUpdate(
-    targetUser._id,
-    { $set: fieldsToUpdate },
-    { new: true },
-  );
-
-  if (!updatedUser) throw new Error('User update failed.');
-
-  const isSelfUpdate = updatedUser.id.toString() === tokenUser.id.toString();
-  const updatedSelfFields = input.name || input.rollNumber || input.department || input.email;
-
-  let newToken: string | undefined;
-  if (isSelfUpdate && updatedSelfFields) {
-    const payload = {
-      id: updatedUser.id,
-      name: updatedUser.name,
-      rollNumber: updatedUser.rollNumber,
-      department: updatedUser.department,
-      email: updatedUser.email,
-      role: currentRole,
+    const fieldsToUpdate: Partial<UpdateUserInput> = {
+      ...(input.name && { name: input.name }),
+      ...(input.email && { email: input.email }),
+      ...(input.rollNumber && { rollNumber: input.rollNumber }),
+      ...(input.department && { department: input.department }),
+      ...(input.profilePicture !== undefined && { profilePicture: input.profilePicture }),
     };
-    newToken = JwtService.getInstance().generateToken(payload, false);
-  }
 
-  return {
-    message: 'User updated successfully.',
-    token: newToken,
-  };
+    if (isAdmin && input.id && input.id !== tokenUser.id) {
+      if (input.roles) {
+        const oldRoles = targetUser.roles ?? [];
+        const mergedRoles = Array.from(new Set([...oldRoles, ...input.roles]));
+        fieldsToUpdate.roles = mergedRoles;
+      }
+
+      if (input.status) {
+        fieldsToUpdate.status = input.status;
+      }
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      targetUser._id,
+      { $set: fieldsToUpdate },
+      { new: true },
+    );
+
+    if (!updatedUser) throw new Error('User update failed.');
+
+    const isSelfUpdate = updatedUser.id.toString() === tokenUser.id.toString();
+    const updatedSelfFields = input.name || input.rollNumber || input.department || input.email;
+
+    let newToken: string | undefined;
+    if (isSelfUpdate && updatedSelfFields) {
+      const payload = {
+        id: updatedUser.id,
+        name: updatedUser.name,
+        rollNumber: updatedUser.rollNumber,
+        department: updatedUser.department,
+        email: updatedUser.email,
+        role: currentRole,
+      };
+      newToken = JwtService.getInstance().generateToken(payload, false);
+    }
+
+    return {
+      message: 'User updated successfully.',
+      token: newToken,
+    };
+  } catch (err: any) {
+    logger.error(`Error in updateUser : ${err}`);
+    throw err;
+  }
 };

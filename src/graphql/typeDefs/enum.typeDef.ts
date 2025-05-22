@@ -6,7 +6,7 @@ Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
 import gql from 'graphql-tag';
 
-export const enumTypeDefs = gql`
+export const enumTypeDef = gql`
   enum UserStatus {
     active
     suspended

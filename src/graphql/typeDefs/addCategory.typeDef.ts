@@ -6,12 +6,8 @@ Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
 import gql from 'graphql-tag';
 
-export const getAccessTokenTypeDef = gql`
-  type AccessTokenResponse {
-    token: String
-  }
-
-  type Query {
-    getAccessToken(role: Role!): AccessTokenResponse!
+export const addCategoryTypeDef = gql`
+  type Mutation {
+    addCategory(name: String!): Category!
   }
 `;

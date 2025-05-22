@@ -9,3 +9,6 @@ export * from './getAllUsers.resolver';
 export * from './getUser.resolver';
 export * from './updateUser.resolver';
 export * from './getAccessToken.resolver';
+export * from './addCategory.resolver';
+export * from './getAllCategories.resolver';
+export * from './addProduct.resolver';

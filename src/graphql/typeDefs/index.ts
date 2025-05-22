@@ -10,3 +10,7 @@ export * from './getUser.typeDef';
 export * from './updateUser.typeDef';
 export * from './getAccessToken.typeDef';
 export * from './enum.typeDef';
+export * from './addCategory.typeDef';
+export * from './model.typeDef';
+export * from './getAllCategories.typeDef';
+export * from './addProduct.typeDef';

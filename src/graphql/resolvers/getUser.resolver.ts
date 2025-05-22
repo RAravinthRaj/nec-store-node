@@ -7,41 +7,47 @@ Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 import { Request } from 'express';
 import { Role } from '@/src/config/enum.config';
 import User from '@/src/models/user.model';
+import logger from '@/src/utils/logger';
 
 interface Context {
   req: Request;
 }
 
 interface GetUserArgs {
-  id?: string;
+  id: string;
 }
 
 export const getUser = async (_: any, { id }: GetUserArgs, context: Context) => {
-  const currentRole = (context.req as any).user?.role;
-  if (!currentRole) {
-    throw new Error('Unauthorized: No token provided.');
-  }
-
-  const tokenUserId = (context.req as any).user?.id;
-  const tokenUser = await User.findById(tokenUserId);
-  if (!tokenUser) {
-    throw new Error('User not found.');
-  }
-
-  const isAdmin = currentRole === Role.Admin;
-
-  if (!isAdmin && id && tokenUser.id.toString() !== id) {
-    throw new Error("You don't have permission to perform this operation.");
-  }
-
-  if (isAdmin && id) {
-    const requestedUser = await User.findById(id);
-    if (!requestedUser) {
-      throw new Error(`User with ID ${id} not found.`);
+  try {
+    const currentRole = (context.req as any).user?.role;
+    if (!currentRole) {
+      throw new Error('Unauthorized: No token provided.');
     }
 
-    return requestedUser;
-  }
+    const tokenUserId = (context.req as any).user?.id;
+    const tokenUser = await User.findById(tokenUserId);
+    if (!tokenUser) {
+      throw new Error('User not found.');
+    }
 
-  return tokenUser;
+    const isAdmin = currentRole === Role.Admin;
+
+    if (!isAdmin && id && tokenUser.id.toString() !== id) {
+      throw new Error("You don't have permission to perform this operation.");
+    }
+
+    if (isAdmin && id) {
+      const requestedUser = await User.findById(id);
+      if (!requestedUser) {
+        throw new Error(`User with ID ${id} not found.`);
+      }
+
+      return requestedUser;
+    }
+
+    return tokenUser;
+  } catch (err: any) {
+    logger.error(`Error in getUser : ${err}`);
+    throw err;
+  }
 };
