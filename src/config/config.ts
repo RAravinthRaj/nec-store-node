@@ -21,6 +21,7 @@ export interface Config {
 
   jwtSecretKey: string;
   jwtExpiryTime: any;
+  jwtSignInExpiryTime: any;
 }
 
 export const config: Config = {
@@ -36,4 +37,5 @@ export const config: Config = {
 
   jwtSecretKey: process.env.JWT_SECRET || '',
   jwtExpiryTime: process.env.JWT_EXPIRES_IN || ' ',
+  jwtSignInExpiryTime: process.env.JWT_SIGN_IN_EXPIRES_IN || ' ',
 };

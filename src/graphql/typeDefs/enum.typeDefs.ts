@@ -6,18 +6,30 @@ Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
 import gql from 'graphql-tag';
 
-export const getUserTypeDefs = gql`
-  type User {
-    email: String!
-    rollNumber: String!
-    name: String!
-    department: Department!
-    roles: [Role!]
-    profilePicture: String
-    status: UserStatus
+export const enumTypeDefs = gql`
+  enum UserStatus {
+    active
+    suspended
   }
 
-  type Query {
-    getUser(id: ID!): User!
+  enum OrderBy {
+    ASC
+    DESC
+  }
+
+  enum Department {
+    CSE
+    IT
+    MECH
+    AIDS
+    CIVIL
+    EEE
+    ECE
+  }
+
+  enum Role {
+    customer
+    retailer
+    admin
   }
 `;

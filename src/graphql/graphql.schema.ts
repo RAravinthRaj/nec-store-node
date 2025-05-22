@@ -12,22 +12,33 @@ import {
   userTypeDefs,
   getUserTypeDefs,
   updateUserTypeDefs,
+  accessTokenTypeDefs,
+  enumTypeDefs,
 } from '@/src/graphql/typeDefs';
 
 // Resolvers
-import { getRoles, getAllUsers, getUser, updateUser } from '@/src/graphql/resolvers';
+import {
+  getRoles,
+  getAllUsers,
+  getUser,
+  updateUser,
+  getAccessToken,
+} from '@/src/graphql/resolvers';
 
 export const typeDefs = mergeTypeDefs([
+  enumTypeDefs,
   roleTypeDefs,
   userTypeDefs,
   getUserTypeDefs,
   updateUserTypeDefs,
+  accessTokenTypeDefs,
 ]);
 export const resolvers = {
   Query: {
     getRoles,
     getAllUsers,
     getUser,
+    getAccessToken,
   },
   Mutation: {
     updateUser,

@@ -1,18 +1,14 @@
 import gql from 'graphql-tag';
 
 export const updateUserTypeDefs = gql`
-  enum UserStatus {
-    active
-    suspended
-  }
-
   input UpdateUserInput {
+    id: ID!
     email: String
     name: String
     rollNumber: String
-    department: String
+    department: Department
     profilePicture: String
-    roles: [String!]
+    roles: [Role!]
     status: UserStatus
   }
 

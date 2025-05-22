@@ -8,3 +8,4 @@ export * from './getRoles.resolvers';
 export * from './getAllUsers.resolvers';
 export * from './getUser.resolvers';
 export * from './updateUser.resolvers';
+export * from './getAccessToken.resolvers';

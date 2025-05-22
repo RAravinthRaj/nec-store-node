@@ -8,6 +8,6 @@ import gql from 'graphql-tag';
 
 export const roleTypeDefs = gql`
   type Query {
-    getRoles: [String!]!
+    getRoles: [Role!]!
   }
 `;

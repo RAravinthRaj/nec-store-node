@@ -8,3 +8,5 @@ export * from './getRoles.typeDefs';
 export * from './getAllUsers.typeDefs';
 export * from './getUser.typeDefs';
 export * from './updateUser.typeDefs';
+export * from './getAccessToken.typeDefs';
+export * from './enum.typeDefs';
