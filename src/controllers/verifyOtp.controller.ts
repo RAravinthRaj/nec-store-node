@@ -52,16 +52,20 @@ export const verifyOtp: CustomRequestHandler = async (
     otpStore.delete(email);
 
     const jwtInstance = JwtService.getInstance();
-    const token = jwtInstance.generateToken({
-      email: user.email,
-      userName: user.name,
-      rollNumber: user.rollNumber,
-      department: user.department,
-    });
+    const signInToken = jwtInstance.generateToken(
+      {
+        id: user.id,
+        email: user.email,
+        userName: user.name,
+        rollNumber: user.rollNumber,
+        department: user.department,
+      },
+      true,
+    );
 
-    return res.status(200).json({ message: 'OTP verified successfully.', accessToken: token });
-  } catch (err) {
-    logger.error(`Error in OTP verification: ${err}`);
+    return res.status(200).json({ message: 'OTP verified successfully.', signInToken });
+  } catch (err: any) {
+    logger.error(`Error in verifyOtp: ${err}`);
     next(err);
   }
 };

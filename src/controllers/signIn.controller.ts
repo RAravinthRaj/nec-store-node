@@ -10,6 +10,7 @@ import User from '@/src/models/user.model';
 import { MailService } from '@/src/services/mail.service';
 import { OtpStore } from '@/src/services/otpStore.service';
 import { CustomRequestHandler } from '@/types/express';
+import { UserStatus } from '@/src/config/enum.config';
 import logger from '@/src/utils/logger';
 
 export const signIn: CustomRequestHandler = async (
@@ -36,6 +37,10 @@ export const signIn: CustomRequestHandler = async (
       return res.status(404).json({ message: 'User not found.' });
     }
 
+    if (user.status === UserStatus.Suspended) {
+      return res.status(403).json({ message: 'Account is temporarily Suspended. Contact Admin.' });
+    }
+
     if (otpStore.has(email)) {
       const retrievedOtp = otpStore.get(email);
 
@@ -60,8 +65,8 @@ export const signIn: CustomRequestHandler = async (
     });
 
     return res.status(200).json({ message: 'OTP sent successfully.' });
-  } catch (err) {
-    logger.error(`Error in SignIn : ${err}`);
+  } catch (err: any) {
+    logger.error(`Error in signIn : ${err}`);
     next(err);
   }
 };

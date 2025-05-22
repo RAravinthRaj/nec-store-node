@@ -8,11 +8,12 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { config } from '@/src/config/config';
 
-export const authenticateJWT = (req: Request, res: Response, next: NextFunction) => {
+export const authenticateJWT = (req: Request, res: Response, next: NextFunction): void => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Unauthorized: No token provided.' });
+    res.status(401).json({ error: 'Unauthorized: No token provided.' });
+    return;
   }
 
   const token = authHeader.split(' ')[1];
@@ -22,6 +23,6 @@ export const authenticateJWT = (req: Request, res: Response, next: NextFunction)
     (req as any).user = decoded;
     next();
   } catch (err) {
-    return res.status(403).json({ error: 'Invalid or expired token.' });
+    res.status(403).json({ error: 'Invalid or expired token.' });
   }
 };

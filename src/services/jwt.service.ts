@@ -17,12 +17,15 @@ export class JwtService {
     if (!JwtService.instance) {
       JwtService.instance = new JwtService();
     }
+
     return JwtService.instance;
   }
 
-  public generateToken(payload: object): string {
+  public generateToken(payload: object, isSignInToken: boolean): string {
+    const expiresIn = isSignInToken ? config.jwtSignInExpiryTime : config.jwtExpiryTime;
+
     return jwt.sign(payload, config.jwtSecretKey, {
-      expiresIn: config.jwtExpiryTime,
+      expiresIn,
     });
   }
 

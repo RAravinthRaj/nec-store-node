@@ -5,18 +5,78 @@ Proprietary and confidential.
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
 import 'module-alias/register';
+import express from 'express';
 import mongoose from 'mongoose';
-import logger from '@/src/utils/logger';
-import app from '@/src/app';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4';
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled';
+import { authenticateJWT } from '@/src/middlewares/authenticateJwt.middleware';
+import { resolvers, typeDefs } from '@/src/graphql/graphql.schema';
+import router from '@/src/routes/rest.routes';
 import { config } from '@/src/config/config';
+import logger from '@/src/utils/logger';
+
+const app = express();
+app.use(express.json());
+
+async function startRestServer() {
+  app.use('/rest', router);
+
+  app.listen(config.restPort, () => {
+    logger.info(`🚀 REST Server running at http://localhost:${config.restPort}/rest`);
+  });
+}
+
+async function startGraphqlServer() {
+  const graphqlServer = new ApolloServer({
+    typeDefs,
+    resolvers,
+    introspection: config.nodeEnv === 'development',
+    plugins: [
+      config.nodeEnv === 'development'
+        ? ApolloServerPluginLandingPageLocalDefault({ embed: true })
+        : ApolloServerPluginLandingPageDisabled(),
+    ],
+    formatError: (formattedError) => {
+      return {
+        message: formattedError.message,
+        path: formattedError.path,
+        locations: formattedError.locations,
+        extensions: {
+          code: formattedError.extensions?.code,
+        },
+      };
+    },
+  });
+
+  await graphqlServer.start();
+
+  app.use(cors());
+  app.use(bodyParser.json());
+
+  app.use(
+    '/graphql',
+    authenticateJWT,
+    expressMiddleware(graphqlServer, {
+      context: async ({ req }) => ({ req }),
+    }),
+  );
+
+  app.listen(config.graphqlPort, () => {
+    logger.info(`🚀 GRAPHQL Server running at http://localhost:${config.graphqlPort}/graphql`);
+  });
+}
 
 mongoose
   .connect(String(config.mongoURI))
   .then(() => {
     logger.info('Database connected successfully');
-    app.listen(config.port, () => {
-      logger.info(`Server running at ${config.port}`);
-    });
+    startRestServer();
+    startGraphqlServer();
   })
   .catch((err) => {
     logger.error(`Error occurred: ${err}`);
