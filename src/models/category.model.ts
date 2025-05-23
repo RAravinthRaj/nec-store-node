@@ -15,7 +15,6 @@ export const CategorySchema: Schema = new Schema<ICategory>(
     name: {
       type: String,
       required: true,
-      unique: true,
     },
   },
   {

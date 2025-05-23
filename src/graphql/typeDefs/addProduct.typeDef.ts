@@ -10,9 +10,9 @@ export const addProductTypeDef = gql`
   type Mutation {
     addProduct(
       title: String!
-      category: ID!
+      categoryId: ID!
       quantity: Int!
-      price: String!
+      price: Float!
       productImage: String
     ): Product!
   }

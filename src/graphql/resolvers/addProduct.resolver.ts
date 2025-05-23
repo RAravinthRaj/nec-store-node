@@ -17,9 +17,9 @@ interface Context {
 
 interface AddProductArgs {
   title: string;
-  category: string;
+  categoryId: string;
   quantity: number;
-  price: string;
+  price: number;
   productImage?: string;
 }
 
@@ -34,22 +34,34 @@ export const addProduct = async (_: any, args: AddProductArgs, context: Context)
       throw new Error("You don't have enough permission to perform this operation.");
     }
 
-    const { title, category, quantity, price, productImage } = args;
+    const { title, categoryId, quantity, price, productImage } = args;
 
-    if (!title?.trim() || !category?.trim() || quantity == null || !price?.trim()) {
+    if (!title?.trim() || !categoryId?.trim() || quantity == null || price == null) {
       throw new Error('All fields must be non-empty.');
     }
 
-    const categoryDoc = await CategoryModel.findById(category).lean();
+    if (quantity < 0 || price < 0) {
+      throw new Error('Quantity or price must be non-negative');
+    }
+
+    const categoryDoc = await CategoryModel.findById(categoryId).lean();
     if (!categoryDoc) {
       throw new Error('Category not found.');
+    }
+
+    const existingProduct = await Product.findOne({
+      title: title.trim(),
+      'category.name': categoryDoc.name,
+    });
+    if (existingProduct) {
+      throw new Error(`${title} already exists under ${categoryDoc.name}.`);
     }
 
     const newProduct = new Product({
       title: title.trim(),
       category: categoryDoc,
       quantity,
-      price: price.trim(),
+      price,
       productImage: productImage || null,
     });
 

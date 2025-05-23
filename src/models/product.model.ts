@@ -18,7 +18,7 @@ export interface IProduct extends Document {
   title: string;
   category: ICategoryRef;
   quantity: number;
-  price: string;
+  price: number;
   productImage?: string | null;
 }
 
@@ -37,7 +37,7 @@ const ProductSchema: Schema = new Schema<IProduct>(
       required: true,
     },
     price: {
-      type: String,
+      type: Number,
       required: true,
     },
     productImage: {

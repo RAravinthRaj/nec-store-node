@@ -28,7 +28,7 @@ export const modelTypeDef = gql`
   }
 
   type Product {
-    _id: ID!
+    id: ID!
     title: String!
     category: Category!
     quantity: Int!
