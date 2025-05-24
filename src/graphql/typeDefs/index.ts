@@ -14,3 +14,5 @@ export * from './addCategory.typeDef';
 export * from './model.typeDef';
 export * from './getAllCategories.typeDef';
 export * from './addProduct.typeDef';
+export * from './updateProduct.typeDef';
+export * from './getAllProducts.typeDef';

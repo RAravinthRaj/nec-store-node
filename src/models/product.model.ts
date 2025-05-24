@@ -9,7 +9,7 @@ import { CategorySchema } from '@/src/models/category.model';
 
 export interface ICategoryRef {
   _id: mongoose.Types.ObjectId;
-  name: string;
+  title: string;
   createdAt: Date;
   updatedAt: Date;
 }

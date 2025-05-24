@@ -21,6 +21,7 @@ interface AddProductArgs {
   quantity: number;
   price: number;
   productImage?: string;
+  __v?: number;
 }
 
 export const addProduct = async (_: any, args: AddProductArgs, context: Context) => {
@@ -41,7 +42,7 @@ export const addProduct = async (_: any, args: AddProductArgs, context: Context)
     }
 
     if (quantity < 0 || price < 0) {
-      throw new Error('Quantity or price must be non-negative');
+      throw new Error('Quantity and price must be non-negative');
     }
 
     const categoryDoc = await CategoryModel.findById(categoryId).lean();

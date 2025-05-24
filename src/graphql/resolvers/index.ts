@@ -12,3 +12,5 @@ export * from './getAccessToken.resolver';
 export * from './addCategory.resolver';
 export * from './getAllCategories.resolver';
 export * from './addProduct.resolver';
+export * from './updateProduct.resolver';
+export * from './getAllProducts.resolver';
