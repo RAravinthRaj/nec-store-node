@@ -22,7 +22,7 @@ export interface IProduct extends Document {
   productImage?: string | null;
 }
 
-const ProductSchema: Schema = new Schema<IProduct>(
+export const ProductSchema: Schema = new Schema<IProduct>(
   {
     title: {
       type: String,

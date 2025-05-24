@@ -24,3 +24,19 @@ export enum UserStatus {
   Active = 'active',
   Suspended = 'suspended',
 }
+
+export enum DeliveryStatus {
+  DELIVERED = 'delivered',
+  NOT_DELIVERED = 'not_delivered',
+}
+
+export enum PaidStatus {
+  PAID = 'paid',
+  UNPAID = 'unpaid',
+}
+
+export enum OrderStatus {
+  CREATED = 'created',
+  CANCELLED = 'cancelled',
+  COMPLETED = 'completed',
+}

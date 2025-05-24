@@ -16,3 +16,8 @@ export * from './getAllCategories.typeDef';
 export * from './addProduct.typeDef';
 export * from './updateProduct.typeDef';
 export * from './getAllProducts.typeDef';
+export * from './createOrder.typeDef';
+export * from './cancelOrder.typeDef';
+export * from './updateOrder.typeDef';
+export * from './getAllOrders.typeDef';
+export * from './getOrder.typeDef';

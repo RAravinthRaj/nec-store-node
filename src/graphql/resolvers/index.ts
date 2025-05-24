@@ -14,3 +14,8 @@ export * from './getAllCategories.resolver';
 export * from './addProduct.resolver';
 export * from './updateProduct.resolver';
 export * from './getAllProducts.resolver';
+export * from './createOrder.resolver';
+export * from './cancelOrder.resolver';
+export * from './updateOrder.resolver';
+export * from './getAllOrders.resolver';
+export * from './getOrder.resolver';

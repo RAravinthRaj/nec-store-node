@@ -6,7 +6,7 @@ Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
 import mongoose, { Schema, Document } from 'mongoose';
 import { isValidDepartment } from '@/src/utils/utils';
-import { Role, UserStatus , Department} from '@/src/config/enum.config';
+import { Role, UserStatus, Department } from '@/src/config/enum.config';
 
 export interface IUser extends Document {
   email: string;
@@ -18,7 +18,7 @@ export interface IUser extends Document {
   status: UserStatus;
 }
 
-const UserSchema: Schema = new Schema<IUser>(
+export const UserSchema: Schema = new Schema<IUser>(
   {
     email: {
       type: String,

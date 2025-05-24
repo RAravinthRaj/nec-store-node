@@ -20,6 +20,11 @@ import {
   addProductTypeDef,
   updateProductTypeDef,
   getAllProductsTypeDef,
+  createOrderTypeDefs,
+  cancelOrderTypeDef,
+  updateOrderTypeDef,
+  getAllOrdersTypeDef,
+  getOrderTypeDef,
 } from '@/src/graphql/typeDefs';
 
 // Resolvers
@@ -34,6 +39,11 @@ import {
   updateProduct,
   getAllCategories,
   getAllProducts,
+  createOrder,
+  cancelOrder,
+  updateOrder,
+  getAllOrders,
+  getOrder,
 } from '@/src/graphql/resolvers';
 
 export const typeDefs = mergeTypeDefs([
@@ -49,6 +59,11 @@ export const typeDefs = mergeTypeDefs([
   getAllCategoriesTypeDef,
   updateProductTypeDef,
   getAllProductsTypeDef,
+  createOrderTypeDefs,
+  cancelOrderTypeDef,
+  updateOrderTypeDef,
+  getAllOrdersTypeDef,
+  getOrderTypeDef,
 ]);
 
 export const resolvers = {
@@ -59,11 +74,16 @@ export const resolvers = {
     getAccessToken,
     getAllCategories,
     getAllProducts,
+    getAllOrders,
+    getOrder,
   },
   Mutation: {
     updateUser,
     addCategory,
     addProduct,
     updateProduct,
+    createOrder,
+    cancelOrder,
+    updateOrder,
   },
 };

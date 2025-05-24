@@ -14,7 +14,7 @@ export const modelTypeDef = gql`
     name: String!
     roles: [Role!]
     department: Department!
-    profilePicture: String!
+    profilePicture: String
     status: UserStatus!
     createdAt: String!
     updatedAt: String!
@@ -34,6 +34,19 @@ export const modelTypeDef = gql`
     quantity: Int!
     price: String!
     productImage: String
+    createdAt: String!
+    updatedAt: String!
+  }
+
+  type Order {
+    id: ID!
+    orderBy: User!
+    orderId: String!
+    products: [Product!]!
+    totalAmount: Float!
+    deliveryStatus: DeliveryStatus!
+    paidStatus: PaidStatus!
+    orderStatus: OrderStatus!
     createdAt: String!
     updatedAt: String!
   }

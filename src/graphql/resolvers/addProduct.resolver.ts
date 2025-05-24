@@ -5,7 +5,6 @@ Proprietary and confidential.
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
 import { Request } from 'express';
-import mongoose from 'mongoose';
 import Product from '@/src/models/product.model';
 import CategoryModel from '@/src/models/category.model';
 import { Role } from '@/src/config/enum.config';

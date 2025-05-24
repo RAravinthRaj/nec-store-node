@@ -32,4 +32,20 @@ export const enumTypeDef = gql`
     retailer
     admin
   }
+
+  enum DeliveryStatus {
+    delivered
+    not_delivered
+  }
+
+  enum PaidStatus {
+    paid
+    unpaid
+  }
+
+  enum OrderStatus {
+    created
+    cancelled
+    completed
+  }
 `;
