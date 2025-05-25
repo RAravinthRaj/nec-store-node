@@ -19,3 +19,5 @@ export * from './cancelOrder.resolver';
 export * from './updateOrder.resolver';
 export * from './getAllOrders.resolver';
 export * from './getOrder.resolver';
+export * from './getSales.resolver';
+export * from './getSalesReport.resolver';

@@ -8,15 +8,24 @@ import FormData from 'form-data';
 import Mailgun from 'mailgun.js';
 import { config } from '@/src/config/config';
 import logger from '@/src/utils/logger';
+import fs from 'fs';
 
 export interface SendOTPParams {
   email: string;
   userName: string;
   otp: string;
 }
+export interface SendReportParams {
+  email: string;
+  userName: string;
+  startDate: string;
+  endDate: string;
+  attachmentPath: string;
+}
 
 export interface IMailService {
   sendOTP(args: SendOTPParams): Promise<any>;
+  sendReport(args: SendReportParams): Promise<any>;
 }
 
 export class MailService implements IMailService {
@@ -55,7 +64,37 @@ export class MailService implements IMailService {
       logger.info(`Email Sent Successfully to ${email} - ${otp}`);
       return result;
     } catch (err: any) {
-      logger.error('Error in mailService:', err);
+      logger.error('Error in sendOTP:', err);
+      throw err;
+    }
+  }
+
+  public async sendReport(args: SendReportParams) {
+    try {
+      const { email, userName, startDate, endDate, attachmentPath } = args;
+
+      const result = await this.mg.messages.create(config.mailgunDomain, {
+        from: `NEC Store <postmaster@${config.mailgunDomain}>`,
+        to: [`${userName} <${email}>`],
+        subject: 'Sales Report',
+        template: 'report-sender',
+        'h:X-Mailgun-Variables': JSON.stringify({
+          userName,
+          startDate,
+          endDate,
+        }),
+        attachment: [
+          {
+            filename: 'sales-report.xlsx',
+            data: fs.createReadStream(attachmentPath),
+          },
+        ],
+      });
+
+      logger.info(`Report Sent Successfully to ${email} - ${startDate} to ${endDate}`);
+      return result;
+    } catch (err: any) {
+      logger.error('Error in sendReport:', err);
       throw err;
     }
   }

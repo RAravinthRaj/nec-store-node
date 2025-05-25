@@ -21,3 +21,5 @@ export * from './cancelOrder.typeDef';
 export * from './updateOrder.typeDef';
 export * from './getAllOrders.typeDef';
 export * from './getOrder.typeDef';
+export * from './getSales.typeDef';
+export * from './getSalesReport.typeDef';

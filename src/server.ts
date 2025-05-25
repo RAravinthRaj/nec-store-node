@@ -20,6 +20,7 @@ import { resolvers, typeDefs } from '@/src/graphql/graphql.schema';
 import router from '@/src/routes/rest.route';
 import { config } from '@/src/config/config';
 import logger from '@/src/utils/logger';
+import { startReportWorker } from '@/src/workers/report.worker';
 
 const app = express();
 app.use(express.json());
@@ -73,12 +74,20 @@ async function startGraphqlServer() {
   });
 }
 
+async function connectRedisAndStartWorker() {
+  startReportWorker();
+  logger.info(
+    `🚀 Connected to REDIS Server running at http://${config.redisHost}:${config.redisPort}`,
+  );
+}
+
 mongoose
   .connect(String(config.mongoURI))
   .then(() => {
     logger.info('Database connected successfully');
     startRestServer();
     startGraphqlServer();
+    connectRedisAndStartWorker();
   })
   .catch((err) => {
     logger.error(`Error occurred: ${err}`);

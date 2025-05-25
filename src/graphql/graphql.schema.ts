@@ -25,6 +25,8 @@ import {
   updateOrderTypeDef,
   getAllOrdersTypeDef,
   getOrderTypeDef,
+  getSalesTypeDef,
+  getSalesReportTypeDef,
 } from '@/src/graphql/typeDefs';
 
 // Resolvers
@@ -44,6 +46,8 @@ import {
   updateOrder,
   getAllOrders,
   getOrder,
+  getSales,
+  getSalesReport,
 } from '@/src/graphql/resolvers';
 
 export const typeDefs = mergeTypeDefs([
@@ -64,6 +68,8 @@ export const typeDefs = mergeTypeDefs([
   updateOrderTypeDef,
   getAllOrdersTypeDef,
   getOrderTypeDef,
+  getSalesTypeDef,
+  getSalesReportTypeDef,
 ]);
 
 export const resolvers = {
@@ -76,6 +82,8 @@ export const resolvers = {
     getAllProducts,
     getAllOrders,
     getOrder,
+    getSales,
+    getSalesReport,
   },
   Mutation: {
     updateUser,

@@ -22,6 +22,12 @@ export interface Config {
   jwtSecretKey: string;
   jwtExpiryTime: any;
   jwtSignInExpiryTime: any;
+
+  redisHost: string;
+  redisPort: number;
+  redisUserName: string;
+  redisPassword: string;
+  redisDBType: number;
 }
 
 export const config: Config = {
@@ -38,4 +44,10 @@ export const config: Config = {
   jwtSecretKey: process.env.JWT_SECRET || '',
   jwtExpiryTime: process.env.JWT_EXPIRES_IN || ' ',
   jwtSignInExpiryTime: process.env.JWT_SIGN_IN_EXPIRES_IN || ' ',
+
+  redisHost: process.env.REDIS_HOST || '',
+  redisPort: Number(process.env.REDIS_PORT) || 3002,
+  redisUserName: process.env.REDIS_USERNAME || '',
+  redisPassword: process.env.REDIS_PASSWORD || '',
+  redisDBType: Number(process.env.REDIS_DB) || 0,
 };

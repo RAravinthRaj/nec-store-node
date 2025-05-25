@@ -50,4 +50,15 @@ export const modelTypeDef = gql`
     createdAt: String!
     updatedAt: String!
   }
+
+  type SalesItem {
+    title: String!
+    category: Category!
+    left: Int!
+    sold: Int!
+    totalPrice: Float!
+    productImage: String
+    createdAt: String!
+    updatedAt: String!
+  }
 `;

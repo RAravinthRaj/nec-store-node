@@ -62,7 +62,7 @@ export const createOrder = async (_: any, args: CreateOrderArgs, context: Contex
         title: product?.title,
         category: product?.category,
         quantity: item?.quantity,
-        price: totalPrice,
+        price: product?.price,
         productImage: product?.productImage || null,
       });
 
