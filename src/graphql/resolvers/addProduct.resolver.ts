@@ -1,0 +1,75 @@
+/*
+© 2025 Aravinth Raj R. All rights reserved.
+Unauthorized copying of this file, via any medium, is strictly prohibited.
+Proprietary and confidential.  
+Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
+*/
+import { Request } from 'express';
+import Product from '@/src/models/product.model';
+import CategoryModel from '@/src/models/category.model';
+import { Role } from '@/src/config/enum.config';
+import logger from '@/src/utils/logger';
+
+interface Context {
+  req: Request;
+}
+
+interface AddProductArgs {
+  title: string;
+  categoryId: string;
+  quantity: number;
+  price: number;
+  productImage?: string;
+  __v?: number;
+}
+
+export const addProduct = async (_: any, args: AddProductArgs, context: Context) => {
+  try {
+    const currentRole = (context.req as any)?.user?.role;
+    if (!currentRole) {
+      throw new Error('Unauthorized: No token provided.');
+    }
+
+    if (currentRole !== Role.Retailer) {
+      throw new Error("You don't have enough permission to perform this operation.");
+    }
+
+    const { title, categoryId, quantity, price, productImage } = args;
+
+    if (!title?.trim() || !categoryId?.trim() || quantity == null || price == null) {
+      throw new Error('All fields must be non-empty.');
+    }
+
+    if (quantity < 0 || price < 0) {
+      throw new Error('Quantity and price must be non-negative');
+    }
+
+    const categoryDoc = await CategoryModel.findById(categoryId).lean();
+    if (!categoryDoc) {
+      throw new Error('Category not found.');
+    }
+
+    const existingProduct = await Product.findOne({
+      title: title.trim(),
+      'category.name': categoryDoc.name,
+    });
+    if (existingProduct) {
+      throw new Error(`${title} already exists under ${categoryDoc.name}.`);
+    }
+
+    const newProduct = new Product({
+      title: title.trim(),
+      category: categoryDoc,
+      quantity,
+      price,
+      productImage: productImage || null,
+    });
+
+    await newProduct.save();
+
+    return newProduct;
+  } catch (err: any) {
+    logger.error(`Error in addProduct: ${err.message || err}`);
+    throw err;
+  }
+};

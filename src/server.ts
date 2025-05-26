@@ -15,10 +15,12 @@ import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled';
 import { authenticateJWT } from '@/src/middlewares/authenticateJwt.middleware';
+import { accessControl } from '@/src/middlewares/accessControl.middleware';
 import { resolvers, typeDefs } from '@/src/graphql/graphql.schema';
-import router from '@/src/routes/rest.routes';
+import router from '@/src/routes/rest.route';
 import { config } from '@/src/config/config';
 import logger from '@/src/utils/logger';
+import { startReportWorker } from '@/src/workers/report.worker';
 
 const app = express();
 app.use(express.json());
@@ -61,6 +63,7 @@ async function startGraphqlServer() {
   app.use(
     '/graphql',
     authenticateJWT,
+    accessControl,
     expressMiddleware(graphqlServer, {
       context: async ({ req }) => ({ req }),
     }),
@@ -71,12 +74,20 @@ async function startGraphqlServer() {
   });
 }
 
+async function connectRedisAndStartWorker() {
+  startReportWorker();
+  logger.info(
+    `🚀 Connected to REDIS Server running at http://${config.redisHost}:${config.redisPort}`,
+  );
+}
+
 mongoose
   .connect(String(config.mongoURI))
   .then(() => {
     logger.info('Database connected successfully');
     startRestServer();
     startGraphqlServer();
+    connectRedisAndStartWorker();
   })
   .catch((err) => {
     logger.error(`Error occurred: ${err}`);

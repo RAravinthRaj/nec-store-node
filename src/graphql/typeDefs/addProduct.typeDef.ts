@@ -6,17 +6,14 @@ Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
 import gql from 'graphql-tag';
 
-export const accessTokenTypeDefs = gql`
-  type AccessTokenResponse {
-    success: Boolean!
-    token: String
-  }
-
-  input AccessTokenInput {
-    role: Role!
-  }
-
-  type Query {
-    getAccessToken(role: Role!): AccessTokenResponse!
+export const addProductTypeDef = gql`
+  type Mutation {
+    addProduct(
+      title: String!
+      categoryId: ID!
+      quantity: Int!
+      price: Float!
+      productImage: String
+    ): Product!
   }
 `;

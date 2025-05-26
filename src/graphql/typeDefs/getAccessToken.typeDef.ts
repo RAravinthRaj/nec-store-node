@@ -1,4 +1,4 @@
-/* 
+/*
 © 2025 Aravinth Raj R. All rights reserved.
 Unauthorized copying of this file, via any medium, is strictly prohibited.
 Proprietary and confidential.  
@@ -6,30 +6,12 @@ Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
 import gql from 'graphql-tag';
 
-export const enumTypeDefs = gql`
-  enum UserStatus {
-    active
-    suspended
+export const getAccessTokenTypeDef = gql`
+  type AccessTokenResponse {
+    token: String
   }
 
-  enum OrderBy {
-    ASC
-    DESC
-  }
-
-  enum Department {
-    CSE
-    IT
-    MECH
-    AIDS
-    CIVIL
-    EEE
-    ECE
-  }
-
-  enum Role {
-    customer
-    retailer
-    admin
+  type Query {
+    getAccessToken(role: Role!): AccessTokenResponse!
   }
 `;

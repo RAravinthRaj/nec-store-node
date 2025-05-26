@@ -6,18 +6,24 @@ Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
 import { Request } from 'express';
 import User from '@/src/models/user.model';
+import logger from '@/src/utils/logger';
 
 interface Context {
   req: Request;
 }
 
 export const getRoles = async (_: any, __: any, context: Context): Promise<string[]> => {
-  const id = (context.req as any).user?.id;
+  try {
+    const id = (context.req as any).user?.id;
 
-  const user = await User.findById(id);
-  if (!user) {
-    throw new Error('User not found');
+    const user = await User.findById(id);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return user?.roles || [];
+  } catch (err: any) {
+    logger.error(`Error in getRoles : ${err}`);
+    throw err;
   }
-
-  return user?.roles || [];
 };

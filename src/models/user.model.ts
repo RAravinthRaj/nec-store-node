@@ -6,19 +6,19 @@ Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
 import mongoose, { Schema, Document } from 'mongoose';
 import { isValidDepartment } from '@/src/utils/utils';
-import { Role, UserStatus } from '@/src/config/enum.config';
+import { Role, UserStatus, Department } from '@/src/config/enum.config';
 
 export interface IUser extends Document {
   email: string;
   rollNumber: string;
   name: string;
-  department: string;
+  department: Department;
   roles?: Role[];
   profilePicture?: string;
   status: UserStatus;
 }
 
-const UserSchema: Schema = new Schema<IUser>(
+export const UserSchema: Schema = new Schema<IUser>(
   {
     email: {
       type: String,

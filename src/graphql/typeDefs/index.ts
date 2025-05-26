@@ -4,9 +4,22 @@ Unauthorized copying of this file, via any medium, is strictly prohibited.
 Proprietary and confidential.  
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
-export * from './getRoles.typeDefs';
-export * from './getAllUsers.typeDefs';
-export * from './getUser.typeDefs';
-export * from './updateUser.typeDefs';
-export * from './getAccessToken.typeDefs';
-export * from './enum.typeDefs';
+export * from './getRoles.typeDef';
+export * from './getAllUsers.typeDef';
+export * from './getUser.typeDef';
+export * from './updateUser.typeDef';
+export * from './getAccessToken.typeDef';
+export * from './enum.typeDef';
+export * from './addCategory.typeDef';
+export * from './model.typeDef';
+export * from './getAllCategories.typeDef';
+export * from './addProduct.typeDef';
+export * from './updateProduct.typeDef';
+export * from './getAllProducts.typeDef';
+export * from './createOrder.typeDef';
+export * from './cancelOrder.typeDef';
+export * from './updateOrder.typeDef';
+export * from './getAllOrders.typeDef';
+export * from './getOrder.typeDef';
+export * from './getSales.typeDef';
+export * from './getSalesReport.typeDef';
