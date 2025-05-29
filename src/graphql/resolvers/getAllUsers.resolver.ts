@@ -58,7 +58,9 @@ export const getAllUsers = async (
       .skip(skip)
       .limit(limit);
 
-    return users;
+    const totalCount = await User.countDocuments(filter);
+
+    return { users, totalCount };
   } catch (err: any) {
     logger.error(`Error in getAllUsers : ${err}`);
     throw err;

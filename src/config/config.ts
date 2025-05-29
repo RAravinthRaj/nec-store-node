@@ -28,6 +28,8 @@ export interface Config {
   redisUserName: string;
   redisPassword: string;
   redisDBType: number;
+
+  imageApiKey: string;
 }
 
 export const config: Config = {
@@ -50,4 +52,6 @@ export const config: Config = {
   redisUserName: process.env.REDIS_USERNAME || '',
   redisPassword: process.env.REDIS_PASSWORD || '',
   redisDBType: Number(process.env.REDIS_DB) || 0,
+
+  imageApiKey: process.env.IMG_BB_API_KEY || '',
 };

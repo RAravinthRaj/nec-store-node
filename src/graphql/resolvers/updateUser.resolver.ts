@@ -9,6 +9,7 @@ import User from '@/src/models/user.model';
 import { JwtService } from '@/src/services/jwt.service';
 import { Role, UserStatus } from '@/src/config/enum.config';
 import logger from '@/src/utils/logger';
+import { ImageBucketService } from '@/src/services/imageBucket.service';
 
 interface Context {
   req: Request;
@@ -58,6 +59,18 @@ export const updateUser = async (
       targetUser = foundUser;
     }
 
+    if (input.profilePicture) {
+      const imageService = ImageBucketService.getInstance();
+
+      if (imageService.isValidBase64Image(input.profilePicture)) {
+        const profilePicture = await imageService.uploadBase64Image(input.profilePicture);
+
+        input.profilePicture = profilePicture;
+      } else {
+        throw new Error('Invalid base64 image for profilePicture.');
+      }
+    }
+
     const fieldsToUpdate: Partial<UpdateUserInput> = {
       ...(input.name && { name: input.name }),
       ...(input.email && { email: input.email }),
@@ -92,12 +105,13 @@ export const updateUser = async (
     let newToken: string | undefined;
     if (isSelfUpdate && updatedSelfFields) {
       const payload = {
-        id: updatedUser.id,
-        name: updatedUser.name,
-        rollNumber: updatedUser.rollNumber,
-        department: updatedUser.department,
-        email: updatedUser.email,
+        id: updatedUser?.id,
+        name: updatedUser?.name,
+        rollNumber: updatedUser?.rollNumber,
+        department: updatedUser?.department,
+        email: updatedUser?.email,
         role: currentRole,
+        profilePicture: updatedUser?.profilePicture,
       };
       newToken = JwtService.getInstance().generateToken(payload, false);
     }

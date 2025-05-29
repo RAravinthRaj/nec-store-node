@@ -23,6 +23,7 @@ import logger from '@/src/utils/logger';
 import { startReportWorker } from '@/src/workers/report.worker';
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 async function startRestServer() {
@@ -56,8 +57,6 @@ async function startGraphqlServer() {
   });
 
   await graphqlServer.start();
-
-  app.use(cors());
   app.use(bodyParser.json());
 
   app.use(

@@ -9,7 +9,7 @@ import Product from '@/src/models/product.model';
 import Order from '@/src/models/order.model';
 import logger from '@/src/utils/logger';
 import { DeliveryStatus, OrderStatus, PaidStatus } from '@/src/config/enum.config';
-import { nextOrderId } from '@/src/services/nextOrderId.service';
+import { IdService } from '@/src/services/tempOrderId.service';
 
 interface Context {
   req: Request;
@@ -72,7 +72,7 @@ export const createOrder = async (_: any, args: CreateOrderArgs, context: Contex
       productItems.push(product);
     }
 
-    const orderId = await nextOrderId();
+    const orderId = await IdService.getInstance().getNextOrderId();
     const newOrder = new Order({
       orderId,
       orderBy: user,

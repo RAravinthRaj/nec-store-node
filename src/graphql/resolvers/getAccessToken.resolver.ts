@@ -22,7 +22,7 @@ export const getAccessToken = async (
   _: any,
   { role }: AccessTokenArgs,
   context: Context,
-): Promise<{ token?: string }> => {
+): Promise<{ role?: string; token?: string }> => {
   try {
     const userId = (context.req as any).user?.id;
 
@@ -37,17 +37,19 @@ export const getAccessToken = async (
     }
 
     const payload = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      rollNumber: user.rollNumber,
-      department: user.department,
+      id: user?.id,
+      name: user?.name,
+      email: user?.email,
+      rollNumber: user?.rollNumber,
+      department: user?.department,
+      profilePicture: user?.profilePicture,
       role: role,
     };
 
     const newToken = JwtService.getInstance().generateToken(payload, false);
 
     return {
+      role,
       token: newToken,
     };
   } catch (err: any) {

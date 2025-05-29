@@ -8,6 +8,7 @@ import gql from 'graphql-tag';
 
 export const getAccessTokenTypeDef = gql`
   type AccessTokenResponse {
+    role: String
     token: String
   }
 
