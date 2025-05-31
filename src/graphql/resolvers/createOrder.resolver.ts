@@ -9,7 +9,7 @@ import Product from '@/src/models/product.model';
 import Order from '@/src/models/order.model';
 import logger from '@/src/utils/logger';
 import { DeliveryStatus, OrderStatus, PaidStatus } from '@/src/config/enum.config';
-import { IdService } from '@/src/services/tempOrderId.service';
+import { IdService } from '@/src/services/orderId.service';
 
 interface Context {
   req: Request;
