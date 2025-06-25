@@ -37,7 +37,14 @@ export const addCategory = async (_: any, { name }: AddCategoryArgs, context: Co
     await newCategory.save();
     return newCategory;
   } catch (err: any) {
-    logger.error(`Error in addCategory : ${err}`);
-    throw err;
+    const error = err?.message || err?.toString?.() || 'Unknown error';
+
+    logger.error(`Error in addCategory: ${error}`);
+
+    if (error.includes('E11000')) {
+      throw new Error('Category already exists.');
+    }
+
+    throw error;
   }
 };

@@ -15,9 +15,8 @@ export interface Config {
   nodeEnv: string;
   mongoURI: string;
 
-  mailgunApiKey: string;
-  mailgunDomain: string;
-  mailgunClientUrl: string;
+  smtpUserName: string;
+  smtpPassword: string;
 
   jwtSecretKey: string;
   jwtExpiryTime: any;
@@ -39,9 +38,8 @@ export const config: Config = {
   nodeEnv: process.env.NODE_ENV || 'development',
   mongoURI: process.env.MONGO_URL || '',
 
-  mailgunApiKey: process.env.MAILGUN_API_KEY || '',
-  mailgunDomain: process.env.MAILGUN_DOMAIN || '',
-  mailgunClientUrl: process.env.MAILGUN_CLIENT_URL || '',
+  smtpUserName: process.env.SMTP_USER_NAME || '',
+  smtpPassword: process.env.SMTP_PASSWORD || '',
 
   jwtSecretKey: process.env.JWT_SECRET || '',
   jwtExpiryTime: process.env.JWT_EXPIRES_IN || ' ',

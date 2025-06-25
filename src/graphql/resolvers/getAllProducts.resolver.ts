@@ -40,7 +40,9 @@ export const getAllProducts = async (_: any, args: GetAllProductsArgs, context: 
 
     const products = await Product.find(filter).sort({ title: sortOrder }).skip(skip).limit(limit);
 
-    return products;
+    const totalCount = await Product.countDocuments(filter);
+
+    return { products, totalCount };
   } catch (err: any) {
     logger.error(`Error in getAllProducts: ${err.message || err}`);
     throw err;

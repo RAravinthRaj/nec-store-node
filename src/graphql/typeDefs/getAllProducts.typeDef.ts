@@ -7,6 +7,11 @@ Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 import gql from 'graphql-tag';
 
 export const getAllProductsTypeDef = gql`
+  type GetAllProductsResponse {
+    totalCount: Int!
+    products: [Product!]!
+  }
+
   type Query {
     getAllProducts(
       skip: Int
@@ -15,6 +20,6 @@ export const getAllProductsTypeDef = gql`
       categoryId: ID
       title: String
       productIds: [ID!]
-    ): [Product!]!
+    ): GetAllProductsResponse!
   }
 `;

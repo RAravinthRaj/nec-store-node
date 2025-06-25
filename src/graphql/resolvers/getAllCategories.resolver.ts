@@ -20,10 +20,6 @@ export const getAllCategories = async (_: any, __: any, context: Context) => {
       throw new Error('Unauthorized: No token provided.');
     }
 
-    if (currentRole !== Role.Retailer) {
-      throw new Error("You don't have permission to access this resource.");
-    }
-
     const categories = await Category.find();
     return categories;
   } catch (err: any) {

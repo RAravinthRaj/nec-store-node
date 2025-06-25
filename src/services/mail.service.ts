@@ -4,17 +4,19 @@ Unauthorized copying of this file, via any medium, is strictly prohibited.
 Proprietary and confidential.  
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
-import FormData from 'form-data';
-import Mailgun from 'mailgun.js';
-import { config } from '@/src/config/config';
-import logger from '@/src/utils/logger';
+import nodemailer from 'nodemailer';
 import fs from 'fs';
+import path from 'path';
+import handlebars from 'handlebars';
+import logger from '@/src/utils/logger';
+import { config } from '@/src/config/config';
 
 export interface SendOTPParams {
   email: string;
   userName: string;
   otp: string;
 }
+
 export interface SendReportParams {
   email: string;
   userName: string;
@@ -30,14 +32,15 @@ export interface IMailService {
 
 export class MailService implements IMailService {
   private static instance: MailService;
-  private mg: ReturnType<Mailgun['client']>;
+  private transporter: nodemailer.Transporter;
 
   private constructor() {
-    const mailgun = new Mailgun(FormData);
-    this.mg = mailgun.client({
-      username: 'api',
-      key: config.mailgunApiKey,
-      url: config.mailgunClientUrl,
+    this.transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: config.smtpUserName,
+        pass: config.smtpPassword,
+      },
     });
   }
 
@@ -45,55 +48,69 @@ export class MailService implements IMailService {
     if (!MailService.instance) {
       MailService.instance = new MailService();
     }
-
     return MailService.instance;
   }
 
+  private compileTemplate(templateName: string, variables: any): string {
+    const templatePath = path.join(__dirname, '..', 'templates', `${templateName}.html`);
+    const source = fs.readFileSync(templatePath, 'utf-8');
+    const compiled = handlebars.compile(source);
+    return compiled(variables);
+  }
+
   public async sendOTP(args: SendOTPParams) {
+    const { email, userName, otp } = args;
     try {
-      const { email, userName, otp } = args;
-
-      const result = await this.mg.messages.create(config.mailgunDomain, {
-        from: `NEC Store <postmaster@${config.mailgunDomain}>`,
-        to: [`${userName} <${email}>`],
+      const html = this.compileTemplate('otp-template', { userName, OTP: otp });
+      const result = await this.transporter.sendMail({
+        from: `NEC Store <${config.smtpUserName}>`,
+        to: email,
         subject: 'OTP Verification Code',
-        template: 'otp-sender',
-        'h:X-Mailgun-Variables': JSON.stringify({ userName, OTP: otp }),
+        html,
+        attachments: [
+          {
+            filename: 'logo.png',
+            path: path.join(__dirname, '..', 'templates', 'assets', 'logo.png'),
+            cid: 'logo',
+          },
+        ],
       });
-
-      logger.info(`Email Sent Successfully to ${email} - ${otp}`);
+      logger.info(`OTP Email Sent to ${email} - ${otp}`);
       return result;
-    } catch (err: any) {
+    } catch (err) {
       logger.error('Error in sendOTP:', err);
       throw err;
     }
   }
 
   public async sendReport(args: SendReportParams) {
+    const { email, userName, startDate, endDate, attachmentPath } = args;
     try {
-      const { email, userName, startDate, endDate, attachmentPath } = args;
-
-      const result = await this.mg.messages.create(config.mailgunDomain, {
-        from: `NEC Store <postmaster@${config.mailgunDomain}>`,
-        to: [`${userName} <${email}>`],
+      const html = this.compileTemplate('report-template', {
+        userName,
+        startDate,
+        endDate,
+      });
+      const result = await this.transporter.sendMail({
+        from: `NEC Store <${config.smtpUserName}>`,
+        to: email,
         subject: 'Sales Report',
-        template: 'report-sender',
-        'h:X-Mailgun-Variables': JSON.stringify({
-          userName,
-          startDate,
-          endDate,
-        }),
-        attachment: [
+        html,
+        attachments: [
           {
             filename: 'sales-report.xlsx',
-            data: fs.createReadStream(attachmentPath),
+            path: attachmentPath,
+          },
+          {
+            filename: 'logo.png',
+            path: path.join(__dirname, '..', 'templates', 'assets', 'logo.png'),
+            cid: 'logo',
           },
         ],
       });
-
-      logger.info(`Report Sent Successfully to ${email} - ${startDate} to ${endDate}`);
+      logger.info(`Report Email Sent to ${email} - ${startDate} to ${endDate}`);
       return result;
-    } catch (err: any) {
+    } catch (err) {
       logger.error('Error in sendReport:', err);
       throw err;
     }

@@ -9,6 +9,7 @@ import Product, { ICategoryRef } from '@/src/models/product.model';
 import CategoryModel from '@/src/models/category.model';
 import { Role } from '@/src/config/enum.config';
 import logger from '@/src/utils/logger';
+import { ImageBucketService } from '@/src/services/imageBucket.service';
 
 interface Context {
   req: Request;
@@ -52,7 +53,17 @@ export const updateProduct = async (
     if (title?.trim()) existingProduct.title = title.trim();
     if (quantity !== undefined && quantity > 0) existingProduct.quantity = quantity;
     if (price !== undefined && price > 0) existingProduct.price = price;
-    if (productImage !== undefined) existingProduct.productImage = productImage;
+    if (productImage) {
+      const imageService = ImageBucketService.getInstance();
+
+      if (imageService.isValidBase64Image(productImage)) {
+        const updatedProductImage = await imageService.uploadBase64Image(productImage);
+
+        existingProduct.productImage = updatedProductImage;
+      } else {
+        throw new Error('Invalid base64 image for profilePicture.');
+      }
+    }
 
     if (categoryId?.trim()) {
       const categoryDoc = await CategoryModel.findById(categoryId);

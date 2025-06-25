@@ -9,6 +9,7 @@ import Product from '@/src/models/product.model';
 import CategoryModel from '@/src/models/category.model';
 import { Role } from '@/src/config/enum.config';
 import logger from '@/src/utils/logger';
+import { ImageBucketService } from '@/src/services/imageBucket.service';
 
 interface Context {
   req: Request;
@@ -34,7 +35,7 @@ export const addProduct = async (_: any, args: AddProductArgs, context: Context)
       throw new Error("You don't have enough permission to perform this operation.");
     }
 
-    const { title, categoryId, quantity, price, productImage } = args;
+    let { title, categoryId, quantity, price, productImage } = args;
 
     if (!title?.trim() || !categoryId?.trim() || quantity == null || price == null) {
       throw new Error('All fields must be non-empty.');
@@ -55,6 +56,18 @@ export const addProduct = async (_: any, args: AddProductArgs, context: Context)
     });
     if (existingProduct) {
       throw new Error(`${title} already exists under ${categoryDoc.name}.`);
+    }
+
+    if (productImage) {
+      const imageService = ImageBucketService.getInstance();
+
+      if (imageService.isValidBase64Image(productImage)) {
+        const updatedProductImage = await imageService.uploadBase64Image(productImage);
+
+        productImage = updatedProductImage;
+      } else {
+        throw new Error('Invalid base64 image for profilePicture.');
+      }
     }
 
     const newProduct = new Product({
