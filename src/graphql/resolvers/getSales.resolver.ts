@@ -20,6 +20,7 @@ interface GetSalesInput {
   title?: string;
   skip?: number;
   limit?: number;
+  orderBy?: string;
 }
 
 interface GetSalesArgs {
@@ -37,7 +38,7 @@ export const getSales = async (_: any, { input }: GetSalesArgs, context: GetSale
       throw new Error("You don't have permission to perform this operation.");
     }
 
-    const { from, to, categoryId, title, skip = 0, limit } = input || {};
+    const { from, to, categoryId, title, skip = 0, limit, orderBy } = input || {};
 
     const pipeline: any[] = [];
 
@@ -56,10 +57,9 @@ export const getSales = async (_: any, { input }: GetSalesArgs, context: GetSale
 
     const productMatch: any = {};
     if (categoryId) productMatch['products.category._id'] = new mongoose.Types.ObjectId(categoryId);
-    if (title) productMatch['products.title'] = { $regex: title, $options: 'i' };
+    if (title) productMatch['products.title'] = title;
     if (Object.keys(productMatch).length) pipeline.push({ $match: productMatch });
 
-    // Group by product _id to aggregate total sold and total price per product across orders
     pipeline.push({
       $group: {
         _id: '$products._id',
@@ -86,7 +86,7 @@ export const getSales = async (_: any, { input }: GetSalesArgs, context: GetSale
         productImage: '$productDetails.productImage',
         left: '$productDetails.quantity',
         sold: 1,
-        totalPrice: 1, // use aggregated totalPrice from group
+        totalPrice: 1,
         createdAt: { $toString: '$productDetails.createdAt' },
         updatedAt: { $toString: '$productDetails.updatedAt' },
         category: {
@@ -100,6 +100,12 @@ export const getSales = async (_: any, { input }: GetSalesArgs, context: GetSale
 
     pipeline.push({ $sort: { 'category.name': 1, title: 1 } });
 
+    if (orderBy) {
+      pipeline.push({ $sort: { title: orderBy === 'ASC' ? 1 : -1 } });
+    } else {
+      pipeline.push({ $sort: { 'category.name': 1, title: 1 } });
+    }
+
     pipeline.push({
       $facet: {
         paginatedResults: limit ? [{ $skip: skip }, { $limit: limit }] : [{ $skip: skip }],
@@ -108,25 +114,32 @@ export const getSales = async (_: any, { input }: GetSalesArgs, context: GetSale
             $group: {
               _id: null,
               totalSold: { $sum: '$sold' },
-              totalAmount: { $sum: '$totalPrice' }, // sum of totalPrice of all products
+              totalAmount: { $sum: '$totalPrice' },
             },
+          },
+        ],
+        totalCountData: [
+          {
+            $count: 'count',
           },
         ],
       },
     });
 
-    const [result] = await Order.aggregate(pipeline);
+    const [result] = await Order.aggregate(pipeline).sort({ name: orderBy === 'ASC' ? 1 : -1 });
 
     const items = result?.paginatedResults ?? [];
     const totals = result?.totalData?.[0] ?? {
       totalSold: 0,
       totalAmount: 0,
     };
+    const totalCount = result?.totalCountData?.[0]?.count ?? 0;
 
     return {
       items,
       totalSold: totals.totalSold,
       totalAmount: totals.totalAmount,
+      totalCount: totalCount,
     };
   } catch (error: any) {
     logger.error(`Error in getSales: ${error.message || error}`);

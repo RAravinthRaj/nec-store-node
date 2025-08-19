@@ -40,8 +40,9 @@ export const modelTypeDef = gql`
 
   type Order {
     id: ID!
-    orderBy: User!
+    orderBy: ID!
     orderId: String!
+    rollNumber: String!
     products: [Product!]!
     totalAmount: Float!
     deliveryStatus: DeliveryStatus!

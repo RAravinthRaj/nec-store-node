@@ -75,7 +75,8 @@ export const createOrder = async (_: any, args: CreateOrderArgs, context: Contex
     const orderId = await IdService.getInstance().getNextOrderId();
     const newOrder = new Order({
       orderId,
-      orderBy: user,
+      orderBy: user?.id,
+      rollNumber: user?.rollNumber,
       products: orderItems,
       totalAmount,
       deliveryStatus: DeliveryStatus.NOT_DELIVERED,

@@ -11,6 +11,7 @@ export const getSalesTypeDef = gql`
     items: [SalesItem!]!
     totalSold: Int!
     totalAmount: Float!
+    totalCount: Int!
   }
 
   input GetSalesInput {
@@ -20,6 +21,7 @@ export const getSalesTypeDef = gql`
     title: String
     skip: Int
     limit: Int
+    orderBy: String
   }
 
   type Query {
