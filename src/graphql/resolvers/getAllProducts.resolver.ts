@@ -4,6 +4,7 @@ Unauthorized copying of this file, via any medium, is strictly prohibited.
 Proprietary and confidential.  
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
+
 import Product from '@/src/models/product.model';
 import logger from '@/src/utils/logger';
 
@@ -18,11 +19,12 @@ interface GetAllProductsArgs {
   categoryId?: string;
   title?: string;
   productIds?: string[];
+  isRecentProduct?: boolean;
 }
 
 export const getAllProducts = async (_: any, args: GetAllProductsArgs, context: Context) => {
   try {
-    const { skip = 0, limit = 10, orderBy = 'ASC', categoryId, title, productIds } = args;
+    let { skip = 0, limit = 10, orderBy, isRecentProduct, categoryId, title, productIds } = args;
 
     const filter: Record<string, any> = {};
 
@@ -36,11 +38,18 @@ export const getAllProducts = async (_: any, args: GetAllProductsArgs, context: 
       filter.title = { $regex: title.trim(), $options: 'i' };
     }
 
-    const sortOrder = orderBy === 'DESC' ? -1 : 1;
-
-    const products = await Product.find(filter).sort({ title: sortOrder }).skip(skip).limit(limit);
-
+    let products = await Product.find(filter).skip(skip).limit(limit);
     const totalCount = await Product.countDocuments(filter);
+
+    if (isRecentProduct && productIds?.length) {
+      const orderMap = new Map(productIds.map((id, idx) => [id.toString(), idx]));
+      products = products.sort(
+        (a: any, b: any) =>
+          (orderMap.get(a._id.toString()) ?? 0) - (orderMap.get(b._id.toString()) ?? 0),
+      );
+    } else {
+      products = products.sort((a, b) => a.title.localeCompare(b.title));
+    }
 
     return { products, totalCount };
   } catch (err: any) {

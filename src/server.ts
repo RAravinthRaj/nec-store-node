@@ -7,15 +7,21 @@ Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 import 'module-alias/register';
 import express from 'express';
 import mongoose from 'mongoose';
-import cors from 'cors';
 import bodyParser from 'body-parser';
 
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled';
-import { authenticateJWT } from '@/src/middlewares/authenticateJwt.middleware';
-import { accessControl } from '@/src/middlewares/accessControl.middleware';
+import {
+  authenticateJWT,
+  accessControl,
+  bodySizeLimit,
+  corsMiddleware,
+  httpsRedirect,
+  rate_limiter,
+  helmetMiddleware,
+} from '@/src/middlewares';
 import { resolvers, typeDefs } from '@/src/graphql/graphql.schema';
 import router from '@/src/routes/rest.route';
 import { config } from '@/src/config/config';
@@ -23,8 +29,16 @@ import logger from '@/src/utils/logger';
 import { startReportWorker } from '@/src/workers/report.worker';
 
 const app = express();
-app.use(cors());
-app.use(express.json());
+
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+app.use(corsMiddleware);
+app.use(rate_limiter);
+app.use(bodySizeLimit);
+app.use(httpsRedirect);
+
+app.use(helmetMiddleware);
 
 async function startRestServer() {
   app.use('/rest', router);

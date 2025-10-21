@@ -16,6 +16,7 @@ export const modelTypeDef = gql`
     department: Department!
     profilePicture: String
     status: UserStatus!
+    recents: [ID!]!
     createdAt: String!
     updatedAt: String!
   }

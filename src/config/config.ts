@@ -12,6 +12,8 @@ export interface Config {
   restPort: number;
   graphqlPort: number;
 
+  frontendURL: string;
+
   nodeEnv: string;
   mongoURI: string;
 
@@ -29,11 +31,16 @@ export interface Config {
   redisDBType: number;
 
   imageApiKey: string;
+
+  rateLimitMinutes: number;
+  rateLimitRequests: number;
 }
 
 export const config: Config = {
   restPort: Number(process.env.REST_PORT) || 3000,
   graphqlPort: Number(process.env.GRAPHQL_PORT) || 3001,
+
+  frontendURL: process.env.FRONTEND_URL?.trim() || 'http://localhost:5174',
 
   nodeEnv: process.env.NODE_ENV || 'development',
   mongoURI: process.env.MONGO_URL || '',
@@ -52,4 +59,7 @@ export const config: Config = {
   redisDBType: Number(process.env.REDIS_DB) || 0,
 
   imageApiKey: process.env.IMG_BB_API_KEY || '',
+
+  rateLimitMinutes: Number(process.env.RATE_LIMIT_MINUTES) || 15,
+  rateLimitRequests: Number(process.env.RATE_LIMIT_MAX_REQUEST) || 100,
 };
