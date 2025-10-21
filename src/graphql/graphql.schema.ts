@@ -27,9 +27,11 @@ import {
   getOrderTypeDef,
   getSalesTypeDef,
   getSalesReportTypeDef,
+  addRecentTypeDef,
+  getAllRecentProductsTypeDef,
+  getNotificationTypeDef,
 } from '@/src/graphql/typeDefs';
 
-// Resolvers
 import {
   getRoles,
   getAllUsers,
@@ -48,6 +50,10 @@ import {
   getOrder,
   getSales,
   getSalesReport,
+  addRecent,
+  getAllRecentProducts,
+  getNotifications,
+  markNotificationRead,
 } from '@/src/graphql/resolvers';
 
 export const typeDefs = mergeTypeDefs([
@@ -70,6 +76,9 @@ export const typeDefs = mergeTypeDefs([
   getOrderTypeDef,
   getSalesTypeDef,
   getSalesReportTypeDef,
+  addRecentTypeDef,
+  getAllRecentProductsTypeDef,
+  getNotificationTypeDef,
 ]);
 
 export const resolvers = {
@@ -84,6 +93,8 @@ export const resolvers = {
     getOrder,
     getSales,
     getSalesReport,
+    getAllRecentProducts,
+    getNotifications,
   },
   Mutation: {
     updateUser,
@@ -93,5 +104,7 @@ export const resolvers = {
     createOrder,
     cancelOrder,
     updateOrder,
+    addRecent,
+    markNotificationRead,
   },
 };

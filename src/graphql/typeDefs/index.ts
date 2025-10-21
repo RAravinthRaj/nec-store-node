@@ -23,3 +23,6 @@ export * from './getAllOrders.typeDef';
 export * from './getOrder.typeDef';
 export * from './getSales.typeDef';
 export * from './getSalesReport.typeDef';
+export * from './addRecent.typeDef';
+export * from './getRecentProduct.typeDef';
+export * from './getNotification.typeDef';

@@ -21,3 +21,7 @@ export * from './getAllOrders.resolver';
 export * from './getOrder.resolver';
 export * from './getSales.resolver';
 export * from './getSalesReport.resolver';
+export * from './addRecent.resolver';
+export * from './getAllRecentProducts.resolver';
+export * from './getNotification.resolver';
+export * from './markNotificationRead.resolver';

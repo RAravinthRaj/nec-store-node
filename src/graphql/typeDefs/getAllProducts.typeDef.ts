@@ -20,6 +20,7 @@ export const getAllProductsTypeDef = gql`
       categoryId: ID
       title: String
       productIds: [ID!]
+      isRecentProduct: Boolean
     ): GetAllProductsResponse!
   }
 `;

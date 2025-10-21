@@ -7,6 +7,8 @@ Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 import { Request } from 'express';
 import Product from '@/src/models/product.model';
 import CategoryModel from '@/src/models/category.model';
+import Notification from '@/src/models/notifications.model';
+import User from '@/src/models/user.model';
 import { Role } from '@/src/config/enum.config';
 import logger from '@/src/utils/logger';
 import { ImageBucketService } from '@/src/services/imageBucket.service';
@@ -27,6 +29,8 @@ interface AddProductArgs {
 export const addProduct = async (_: any, args: AddProductArgs, context: Context) => {
   try {
     const currentRole = (context.req as any)?.user?.role;
+    const retailerId = (context.req as any)?.user?._id;
+
     if (!currentRole) {
       throw new Error('Unauthorized: No token provided.');
     }
@@ -42,7 +46,7 @@ export const addProduct = async (_: any, args: AddProductArgs, context: Context)
     }
 
     if (quantity < 0 || price < 0) {
-      throw new Error('Quantity and price must be non-negative');
+      throw new Error('Quantity and price must be non-negative.');
     }
 
     const categoryDoc = await CategoryModel.findById(categoryId).lean();
@@ -63,10 +67,9 @@ export const addProduct = async (_: any, args: AddProductArgs, context: Context)
 
       if (imageService.isValidBase64Image(productImage)) {
         const updatedProductImage = await imageService.uploadBase64Image(productImage);
-
         productImage = updatedProductImage;
       } else {
-        throw new Error('Invalid base64 image for profilePicture.');
+        throw new Error('Invalid base64 image for product image.');
       }
     }
 
@@ -76,9 +79,19 @@ export const addProduct = async (_: any, args: AddProductArgs, context: Context)
       quantity,
       price,
       productImage: productImage || null,
+      createdBy: retailerId,
     });
 
     await newProduct.save();
+
+    const customers = await User.find({ roles: Role.Customer });
+    for (const customer of customers) {
+      await Notification.create({
+        userId: customer._id,
+        message: `New Product "${newProduct.title}" added under ${categoryDoc.name}.`,
+        type: 'NEW_PRODUCT',
+      });
+    }
 
     return newProduct;
   } catch (err: any) {

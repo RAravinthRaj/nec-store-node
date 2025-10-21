@@ -8,6 +8,7 @@ import { NextFunction, Request, Response } from 'express';
 import validator from 'validator';
 import { CustomRequestHandler } from '@/types/express';
 import User from '@/src/models/user.model';
+import Notification from '@/src/models/notifications.model';
 import { Department } from '@/src/config/enum.config';
 import logger from '@/src/utils/logger';
 
@@ -42,12 +43,20 @@ export const createUser: CustomRequestHandler = async (
 
     const savedUser = await user.save();
 
+    const admins = await User.find({ roles: 'admin' });
+    for (const admin of admins) {
+      await Notification.create({
+        userId: admin._id,
+        message: `New user "${savedUser.name}" signed up.`,
+        type: 'NEW_USER',
+      });
+    }
+
     return res.status(201).json(savedUser);
   } catch (err: any) {
     if (err?.code === 11000) {
       const field = Object.keys(err?.keyPattern)[0];
       logger.error(`Error Code: ${400} -> ${field} already exists.`);
-
       return res.status(400).json({ error: `${field} already exists.` });
     }
 

@@ -1,10 +1,4 @@
-/* 
-© 2025 Aravinth Raj R. All rights reserved.
-Unauthorized copying of this file, via any medium, is strictly prohibited.
-Proprietary and confidential.  
-Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
-*/
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document, Types } from 'mongoose';
 import { isValidDepartment } from '@/src/utils/utils';
 import { Role, UserStatus, Department } from '@/src/config/enum.config';
 
@@ -16,6 +10,7 @@ export interface IUser extends Document {
   roles?: Role[];
   profilePicture?: string;
   status: UserStatus;
+  recents?: Types.ObjectId[];
 }
 
 export const UserSchema: Schema = new Schema<IUser>(
@@ -55,6 +50,11 @@ export const UserSchema: Schema = new Schema<IUser>(
       type: String,
       enum: Object.values(UserStatus),
       default: UserStatus.Active,
+    },
+    recents: {
+      type: [Schema.Types.ObjectId],
+      ref: 'Product',
+      default: [],
     },
   },
   {
