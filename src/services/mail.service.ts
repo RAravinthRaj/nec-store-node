@@ -32,8 +32,9 @@ export class MailService implements IMailService {
     this.transporter = nodemailer.createTransport({
       host: 'smtp.sendgrid.net',
       port: 587,
+      secure: false,
       auth: {
-        user: 'apikey', // must be 'apikey' literally
+        user: 'apikey',
         pass: config.sendGridApiKey,
       },
     });
