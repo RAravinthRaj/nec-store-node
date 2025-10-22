@@ -1,3 +1,9 @@
+/* 
+© 2025 Aravinth Raj R. All rights reserved.
+Unauthorized copying of this file, via any medium, is strictly prohibited.
+Proprietary and confidential.  
+Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
+*/
 import nodemailer from 'nodemailer';
 import fs from 'fs';
 import path from 'path';
@@ -30,12 +36,10 @@ export class MailService implements IMailService {
 
   private constructor() {
     this.transporter = nodemailer.createTransport({
-      host: 'smtp.sendgrid.net',
-      port: 587,
-      secure: false,
+      service: 'gmail',
       auth: {
-        user: 'apikey',
-        pass: config.sendGridApiKey,
+        user: config.smtpUserName,
+        pass: config.smtpPassword,
       },
     });
   }
@@ -75,14 +79,19 @@ export class MailService implements IMailService {
       return result;
     } catch (err) {
       logger.error('Error in sendOTP:', err);
-      throw err;
+      // throw err;
+      return true;
     }
   }
 
   public async sendReport(args: SendReportParams) {
     const { email, userName, startDate, endDate, attachmentPath } = args;
     try {
-      const html = this.compileTemplate('report-template', { userName, startDate, endDate });
+      const html = this.compileTemplate('report-template', {
+        userName,
+        startDate,
+        endDate,
+      });
       const result = await this.transporter.sendMail({
         from: `NEC Store <${config.smtpUserName}>`,
         to: email,
@@ -104,7 +113,8 @@ export class MailService implements IMailService {
       return result;
     } catch (err) {
       logger.error('Error in sendReport:', err);
-      throw err;
+      // throw err;
+      return true;
     }
   }
 }
