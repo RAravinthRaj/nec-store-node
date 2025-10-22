@@ -27,6 +27,7 @@ import router from '@/src/routes/rest.route';
 import { config } from '@/src/config/config';
 import logger from '@/src/utils/logger';
 import { startReportWorker } from '@/src/workers/report.worker';
+import cors from 'cors';
 
 const app = express();
 
