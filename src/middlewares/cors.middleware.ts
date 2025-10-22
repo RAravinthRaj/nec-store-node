@@ -9,7 +9,7 @@ import { config } from '@/src/config/config';
 import cors from 'cors';
 export const corsMiddleware = cors({
   origin: (origin, callback) => {
-    const allowedOrigins = [config.frontendURL, 'http://localhost:5173'];
+    const allowedOrigins = [config.frontendURL, 'https://nec-store-react.onrender.com'];
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
