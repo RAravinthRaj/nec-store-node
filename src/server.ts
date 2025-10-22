@@ -89,7 +89,7 @@ async function startGraphqlServer() {
 
 async function connectRedisAndStartWorker() {
   startReportWorker();
-  logger.info(`🚀 Connected to REDIS Server running at http://${config.redisUrl}`);
+  logger.info(`🚀 Connected to REDIS Server`);
 }
 
 mongoose
