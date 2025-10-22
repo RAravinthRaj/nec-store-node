@@ -5,7 +5,7 @@ Proprietary and confidential.
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
 import { ConnectionOptions, Worker, Job, JobProgress } from 'bullmq';
-import { MailService } from '@/src/services/mail.service';
+// import { MailService } from '@/src/services/mail.service';
 import ExcelJS from 'exceljs';
 import os from 'os';
 import path from 'path';
@@ -91,13 +91,13 @@ export function startReportWorker(): void {
 
             logger.info(`Generated report for ${startDate} to ${endDate}`);
 
-            await MailService.getInstance().sendReport({
-              email: userEmail,
-              userName,
-              startDate,
-              endDate,
-              attachmentPath: filePath,
-            });
+            // await MailService.getInstance().sendReport({
+            //   email: userEmail,
+            //   userName,
+            //   startDate,
+            //   endDate,
+            //   attachmentPath: filePath,
+            // });
 
             await fs.unlink(filePath);
             logger.info(`Temporary file ${filePath} deleted`);

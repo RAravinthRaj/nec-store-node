@@ -79,8 +79,7 @@ export class MailService implements IMailService {
       return result;
     } catch (err) {
       logger.error('Error in sendOTP:', err);
-      // throw err;
-      return true;
+      throw err;
     }
   }
 
@@ -113,8 +112,7 @@ export class MailService implements IMailService {
       return result;
     } catch (err) {
       logger.error('Error in sendReport:', err);
-      // throw err;
-      return true;
+      throw err;
     }
   }
 }

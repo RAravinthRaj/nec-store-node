@@ -7,7 +7,7 @@ Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 import { Request, Response, NextFunction } from 'express';
 import validator from 'validator';
 import User from '@/src/models/user.model';
-import { MailService } from '@/src/services/mail.service';
+// import { MailService } from '@/src/services/mail.service';
 import { OtpStore } from '@/src/services/otpStore.service';
 import { CustomRequestHandler } from '@/types/express';
 import { UserStatus } from '@/src/config/enum.config';
@@ -46,24 +46,26 @@ export const signIn: CustomRequestHandler = async (
 
       logger.info('OTP already exists');
 
-      await MailService.getInstance().sendOTP({
-        email: user.email,
-        userName: user.name,
-        otp: retrievedOtp || '',
-      });
+      // await MailService.getInstance().sendOTP({
+      //   email: user.email,
+      //   userName: user.name,
+      //   otp: retrievedOtp || '',
+      // });
 
+      logger.info(`OTP Email Sent to ${email} - ${retrievedOtp}`);
       return res.status(200).json({ message: 'OTP sent successfully.' });
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     otpStore.set(email, otp);
 
-    await MailService.getInstance().sendOTP({
-      email: user.email,
-      userName: user.name,
-      otp,
-    });
+    // await MailService.getInstance().sendOTP({
+    //   email: user.email,
+    //   userName: user.name,
+    //   otp,
+    // });
 
+    logger.info(`OTP Email Sent to ${email} - ${otp}`);
     return res.status(200).json({ message: 'OTP sent successfully.' });
   } catch (err: any) {
     logger.error(`Error in signIn : ${err}`);
