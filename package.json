@@ -8,7 +8,7 @@
   "keywords": [],
   "scripts": {
     "lint": "eslint src --ext .ts",
-    "build": "tsc",
+    "build": "tsc && cp -r src/templates dist/src/templates",
     "start": "node dist/src/server.js",
     "dev": "nodemon --watch \"src/**/*.ts\" --exec \"ts-node\" src/server.ts",
     "test": "jest",
