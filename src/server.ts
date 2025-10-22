@@ -5,14 +5,15 @@ Proprietary and confidential.
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
 import 'module-alias/register';
-import express from 'express';
+import express, { Request } from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
+import { ApolloServer } from 'apollo-server-express';
+import {
+  ApolloServerPluginLandingPageLocalDefault,
+  ApolloServerPluginLandingPageDisabled,
+} from 'apollo-server-core';
 
-import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@apollo/server/express4';
-import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
-import { ApolloServerPluginLandingPageDisabled } from '@apollo/server/plugin/disabled';
 import {
   authenticateJWT,
   accessControl,
@@ -32,17 +33,14 @@ const app = express();
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-
 app.use(corsMiddleware);
 app.use(rate_limiter);
 app.use(bodySizeLimit);
 app.use(httpsRedirect);
-
 app.use(helmetMiddleware);
 
 async function startRestServer() {
   app.use('/rest', router);
-
   app.listen(config.restPort, () => {
     logger.info(`🚀 REST Server running at http://localhost:${config.restPort}/rest`);
   });
@@ -53,34 +51,25 @@ async function startGraphqlServer() {
     typeDefs,
     resolvers,
     introspection: config.nodeEnv === 'development',
-    plugins: [
+    plugins:
       config.nodeEnv === 'development'
-        ? ApolloServerPluginLandingPageLocalDefault({ embed: true })
-        : ApolloServerPluginLandingPageDisabled(),
-    ],
-    formatError: (formattedError) => {
-      return {
-        message: formattedError.message,
-        path: formattedError.path,
-        locations: formattedError.locations,
-        extensions: {
-          code: formattedError.extensions?.code,
-        },
-      };
-    },
+        ? [ApolloServerPluginLandingPageLocalDefault({ embed: true })]
+        : [ApolloServerPluginLandingPageDisabled()],
+    formatError: (formattedError) => ({
+      message: formattedError.message,
+      path: formattedError.path,
+      locations: formattedError.locations,
+      extensions: {
+        code: formattedError.extensions?.code,
+      },
+    }),
+    context: ({ req }: { req: Request }) => ({ req }),
   });
 
   await graphqlServer.start();
   app.use(bodyParser.json());
 
-  app.use(
-    '/graphql',
-    authenticateJWT,
-    accessControl,
-    expressMiddleware(graphqlServer, {
-      context: async ({ req }) => ({ req }),
-    }),
-  );
+  app.use('/graphql', authenticateJWT, accessControl, graphqlServer.getMiddleware());
 
   app.listen(config.graphqlPort, () => {
     logger.info(`🚀 GRAPHQL Server running at http://localhost:${config.graphqlPort}/graphql`);
@@ -89,9 +78,7 @@ async function startGraphqlServer() {
 
 async function connectRedisAndStartWorker() {
   startReportWorker();
-  logger.info(
-    `🚀 Connected to REDIS Server running at http://${config.redisHost}:${config.redisPort}`,
-  );
+  logger.info(`🚀 Connected to REDIS Server running at http://${config.redisUrl}`);
 }
 
 mongoose
