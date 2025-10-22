@@ -1,9 +1,3 @@
-/* 
-© 2025 Aravinth Raj R. All rights reserved.
-Unauthorized copying of this file, via any medium, is strictly prohibited.
-Proprietary and confidential.  
-Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
-*/
 import nodemailer from 'nodemailer';
 import fs from 'fs';
 import path from 'path';
@@ -36,10 +30,11 @@ export class MailService implements IMailService {
 
   private constructor() {
     this.transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.sendgrid.net',
+      port: 587,
       auth: {
-        user: config.smtpUserName,
-        pass: config.smtpPassword,
+        user: 'apikey', // must be 'apikey' literally
+        pass: config.sendGridApiKey,
       },
     });
   }
@@ -86,11 +81,7 @@ export class MailService implements IMailService {
   public async sendReport(args: SendReportParams) {
     const { email, userName, startDate, endDate, attachmentPath } = args;
     try {
-      const html = this.compileTemplate('report-template', {
-        userName,
-        startDate,
-        endDate,
-      });
+      const html = this.compileTemplate('report-template', { userName, startDate, endDate });
       const result = await this.transporter.sendMail({
         from: `NEC Store <${config.smtpUserName}>`,
         to: email,

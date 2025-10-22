@@ -30,6 +30,8 @@ export interface Config {
 
   rateLimitMinutes: number;
   rateLimitRequests: number;
+
+  sendGridApiKey: string;
 }
 
 export const config: Config = {
@@ -54,4 +56,6 @@ export const config: Config = {
 
   rateLimitMinutes: Number(process.env.RATE_LIMIT_MINUTES) || 15,
   rateLimitRequests: Number(process.env.RATE_LIMIT_MAX_REQUEST) || 100,
+
+  sendGridApiKey: process.env.SEND_GRID_API_KEY || '',
 };

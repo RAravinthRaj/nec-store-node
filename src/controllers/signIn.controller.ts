@@ -26,7 +26,7 @@ export const signIn: CustomRequestHandler = async (
       ]),
     );
 
-    if (validator.isEmpty(email) || !validator.isEmail(email)) {
+    if ((!email && validator.isEmpty(email)) || !validator.isEmail(email)) {
       return res.status(400).json({ error: 'Invalid email.' });
     }
 
