@@ -27,13 +27,14 @@ import router from '@/src/routes/rest.route';
 import { config } from '@/src/config/config';
 import logger from '@/src/utils/logger';
 import { startReportWorker } from '@/src/workers/report.worker';
+import cors from 'cors';
 
 const app = express();
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-app.use(corsMiddleware);
+app.use(cors({ origin: '*' }));
 app.use(rate_limiter);
 app.use(bodySizeLimit);
 app.use(httpsRedirect);
