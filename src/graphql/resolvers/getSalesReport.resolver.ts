@@ -9,14 +9,14 @@ import { redisConnection } from '@/src/workers/report.worker';
 import { Role } from '@/src/config/enum.config';
 import logger from '@/src/utils/logger';
 import { getSales, GetSalesContext } from '@/src/graphql/resolvers/getSales.resolver';
-
 interface GetSalesReportArgs {
   input: {
     from: string;
     to: string;
+    categoryId?: string;
+    title?: string;
   };
 }
-
 const reportQueue = new Queue('report-queue', {
   connection: redisConnection,
 });
@@ -36,7 +36,7 @@ export const getSalesReport = async (
       throw new Error("You don't have enough permission to perform this operation.");
     }
 
-    const { from, to } = args.input;
+    const { from, to, categoryId, title } = args.input;
 
     const salesReport = await getSales(
       _,
@@ -44,6 +44,8 @@ export const getSalesReport = async (
         input: {
           from,
           to,
+          categoryId,
+          title,
           skip: 0,
         },
       },

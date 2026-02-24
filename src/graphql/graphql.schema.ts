@@ -30,6 +30,7 @@ import {
   addRecentTypeDef,
   getAllRecentProductsTypeDef,
   getNotificationTypeDef,
+  addStockTypeDef,
 } from '@/src/graphql/typeDefs';
 
 import {
@@ -54,6 +55,7 @@ import {
   getAllRecentProducts,
   getNotifications,
   markNotificationRead,
+  addStock,
 } from '@/src/graphql/resolvers';
 
 export const typeDefs = mergeTypeDefs([
@@ -79,6 +81,7 @@ export const typeDefs = mergeTypeDefs([
   addRecentTypeDef,
   getAllRecentProductsTypeDef,
   getNotificationTypeDef,
+  addStockTypeDef,
 ]);
 
 export const resolvers = {
@@ -106,5 +109,6 @@ export const resolvers = {
     updateOrder,
     addRecent,
     markNotificationRead,
+    addStock,
   },
 };

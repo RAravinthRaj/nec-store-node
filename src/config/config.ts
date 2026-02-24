@@ -24,12 +24,21 @@ export interface Config {
   jwtExpiryTime: any;
   jwtSignInExpiryTime: any;
 
-  redisUrl: string;
-
   imageApiKey: string;
 
   rateLimitMinutes: number;
   rateLimitRequests: number;
+
+  // redisOtpUrl: string;
+  // redisOtpToken: string;
+
+  redisHost: string;
+  redisPort: number;
+  redisUserName: string;
+  redisPassword: string;
+  redisDBType: number;
+
+  threshold: number;
 }
 
 export const config: Config = {
@@ -48,10 +57,16 @@ export const config: Config = {
   jwtExpiryTime: process.env.JWT_EXPIRES_IN || ' ',
   jwtSignInExpiryTime: process.env.JWT_SIGN_IN_EXPIRES_IN || ' ',
 
-  redisUrl: process.env.REDIS_URL || 'http://localhost:6379',
-
   imageApiKey: process.env.IMG_BB_API_KEY || '',
 
   rateLimitMinutes: Number(process.env.RATE_LIMIT_MINUTES) || 15,
   rateLimitRequests: Number(process.env.RATE_LIMIT_MAX_REQUEST) || 100,
+
+  redisHost: process.env.REDIS_HOST || '',
+  redisPort: Number(process.env.REDIS_PORT) || 3002,
+  redisUserName: process.env.REDIS_USERNAME || '',
+  redisPassword: process.env.REDIS_PASSWORD || '',
+  redisDBType: Number(process.env.REDIS_DB) || 0,
+
+  threshold: 10,
 };

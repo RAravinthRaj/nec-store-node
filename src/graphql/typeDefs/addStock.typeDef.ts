@@ -6,19 +6,19 @@ Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
 import gql from 'graphql-tag';
 
-export const getSalesReportTypeDef = gql`
-  input GetSalesReportInput {
-    from: String!
-    to: String!
-    categoryId: String
-    title: String
+export const addStockTypeDef = gql`
+  input AddStockInput {
+    id: ID!
+    quantity: Int
+    price: Float
   }
 
-  type GetSalesReportResponse {
+  type AddStockResponse {
     message: String!
+    product: Product!
   }
 
-  type Query {
-    getSalesReport(input: GetSalesReportInput): GetSalesReportResponse!
+  type Mutation {
+    addStock(input: AddStockInput!): AddStockResponse!
   }
 `;

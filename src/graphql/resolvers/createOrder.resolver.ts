@@ -13,6 +13,7 @@ import User from '@/src/models/user.model';
 import logger from '@/src/utils/logger';
 import { DeliveryStatus, OrderStatus, PaidStatus, Role } from '@/src/config/enum.config';
 import { IdService } from '@/src/services/orderId.service';
+import { config } from '@/src/config/config';
 
 interface Context {
   req: Request;
@@ -114,6 +115,25 @@ export const createOrder = async (_: any, args: CreateOrderArgs, context: Contex
         logger.error(
           `Failed to create notification for retailer ${retailer._id}: ${err.message || err}`,
         );
+      }
+    }
+
+    for (const product of productItemsToUpdate) {
+      if (product.quantity <= config.threshold) {
+        for (const retailer of retailers) {
+          try {
+            await Notification.create({
+              userId: retailer._id,
+              message: `Stock alert: The product "${product.title}" has fallen below the threshold. Remaining quantity: ${product.quantity}.`,
+              type: 'STOCK_INSUFFICIENT',
+            });
+            logger.info(`Notification sent to retailer ${retailer._id}`);
+          } catch (err: any) {
+            logger.error(
+              `Failed to create notification for retailer ${retailer._id}: ${err.message || err}`,
+            );
+          }
+        }
       }
     }
 

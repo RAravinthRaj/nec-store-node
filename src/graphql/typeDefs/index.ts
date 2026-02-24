@@ -26,3 +26,4 @@ export * from './getSalesReport.typeDef';
 export * from './addRecent.typeDef';
 export * from './getRecentProduct.typeDef';
 export * from './getNotification.typeDef';
+export * from './addStock.typeDef';

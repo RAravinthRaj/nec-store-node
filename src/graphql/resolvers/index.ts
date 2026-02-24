@@ -25,3 +25,4 @@ export * from './addRecent.resolver';
 export * from './getAllRecentProducts.resolver';
 export * from './getNotification.resolver';
 export * from './markNotificationRead.resolver';
+export * from './addStock.resolver';

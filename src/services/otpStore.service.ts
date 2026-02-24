@@ -4,25 +4,19 @@ Unauthorized copying of this file, via any medium, is strictly prohibited.
 Proprietary and confidential.  
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
-export interface OtpEntry {
-  otp: string;
-  expiresAt: number;
-}
+import { OtpModel } from '../models/Otp.model';
 
 export interface IOtpStore {
-  set(email: string, otp: string, ttlSeconds: number): void;
-  get(email: string): string | null;
-  delete(email: string): void | null;
-  has(email: string): boolean | null;
+  set(email: string, otp: string, ttlSeconds?: number): Promise<void>;
+  get(email: string): Promise<string | null>;
+  delete(email: string): Promise<void>;
+  has(email: string): Promise<boolean>;
 }
 
 export class OtpStore implements IOtpStore {
   private static instance: OtpStore;
-  private store: Map<string, OtpEntry>;
 
-  private constructor() {
-    this.store = new Map<string, OtpEntry>();
-  }
+  private constructor() {}
 
   public static getInstance(): OtpStore {
     if (!OtpStore.instance) {
@@ -31,32 +25,43 @@ export class OtpStore implements IOtpStore {
     return OtpStore.instance;
   }
 
-  public set(email: string, otp: string, ttlSeconds = 900): void {
-    const expiresAt = Date.now() + ttlSeconds * 1000;
-    this.store.set(email, { otp, expiresAt });
+  private getExpiryDate(ttlSeconds: number): Date {
+    return new Date(Date.now() + ttlSeconds * 1000);
   }
 
-  public get(email: string): string | null {
-    const entry = this.store.get(email);
-    if (!entry) {
+  public async set(email: string, otp: string, ttlSeconds = 900): Promise<void> {
+    await OtpModel.findOneAndUpdate(
+      { email },
+      {
+        otp,
+        expiresAt: this.getExpiryDate(ttlSeconds),
+      },
+      { upsert: true, new: true },
+    );
+  }
+
+  public async get(email: string): Promise<string | null> {
+    const record = await OtpModel.findOne({ email });
+
+    if (!record) return null;
+
+    if (record.expiresAt < new Date()) {
+      await OtpModel.deleteOne({ email });
       return null;
     }
 
-    if (Date.now() > entry.expiresAt) {
-      this.store.delete(email);
-      return null;
-    }
-
-    return entry.otp;
+    return record.otp;
   }
 
-  public delete(email: string): void {
-    if (this.has(email)) {
-      this.store.delete(email);
-    }
+  public async delete(email: string): Promise<void> {
+    await OtpModel.deleteOne({ email });
   }
 
-  public has(email: string): boolean {
-    return this.get(email) !== null;
+  public async has(email: string): Promise<boolean> {
+    const record = await OtpModel.exists({
+      email,
+      expiresAt: { $gt: new Date() },
+    });
+    return Boolean(record);
   }
 }

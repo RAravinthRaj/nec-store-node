@@ -41,6 +41,11 @@ export const getSales = async (_: any, { input }: GetSalesArgs, context: GetSale
     const { from, to, categoryId, title, skip = 0, limit, orderBy } = input || {};
 
     const pipeline: any[] = [];
+    pipeline.push({
+      $match: {
+        orderStatus: 'completed',
+      },
+    });
 
     if (from || to) {
       const createdAt: any = {};
@@ -57,7 +62,13 @@ export const getSales = async (_: any, { input }: GetSalesArgs, context: GetSale
 
     const productMatch: any = {};
     if (categoryId) productMatch['products.category._id'] = new mongoose.Types.ObjectId(categoryId);
-    if (title) productMatch['products.title'] = title;
+    if (title) {
+      productMatch['products.title'] = {
+        $regex: title,
+        $options: 'i',
+      };
+    }
+
     if (Object.keys(productMatch).length) pipeline.push({ $match: productMatch });
 
     pipeline.push({

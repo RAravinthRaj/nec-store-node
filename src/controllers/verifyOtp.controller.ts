@@ -4,6 +4,7 @@ Unauthorized copying of this file, via any medium, is strictly prohibited.
 Proprietary and confidential.  
 Written by Aravinth Raj R <aravinthr235@gmail.com>, 2025.
 */
+
 import { Request, Response, NextFunction } from 'express';
 import validator from 'validator';
 import User from '@/src/models/user.model';
@@ -18,41 +19,37 @@ export const verifyOtp: CustomRequestHandler = async (
   next: NextFunction,
 ) => {
   try {
-    const { email, otp }: any = Object.fromEntries(
-      Object.entries(req.body).map(([key, value]) => [
-        key,
-        typeof value === 'string' ? value.toLowerCase().trim() : value,
-      ]),
-    );
+    const { email, otp } = req.body as { email: string; otp: string };
 
-    if (validator.isEmpty(email) || !validator.isEmail(email)) {
+    const normalizedEmail = email?.toLowerCase().trim();
+
+    if (!normalizedEmail || !validator.isEmail(normalizedEmail)) {
       return res.status(400).json({ error: 'Invalid email.' });
     }
 
-    if (validator.isEmpty(otp)) {
+    if (!otp || validator.isEmpty(String(otp))) {
       return res.status(400).json({ error: 'OTP is required.' });
     }
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: normalizedEmail });
     if (!user) {
       return res.status(404).json({ error: 'User not found.' });
     }
 
     const otpStore = OtpStore.getInstance();
-    const entry = otpStore.get(email);
+    const storedOtp = await otpStore.get(normalizedEmail);
 
-    if (!entry) {
+    if (!storedOtp) {
       return res.status(400).json({ error: 'OTP has expired.' });
     }
 
-    if (entry !== otp) {
+    if (String(storedOtp) !== String(otp)) {
       return res.status(401).json({ error: 'Invalid OTP.' });
     }
 
-    otpStore.delete(email);
+    await otpStore.delete(normalizedEmail);
 
-    const jwtInstance = JwtService.getInstance();
-    const signInToken = jwtInstance.generateToken(
+    const signInToken = JwtService.getInstance().generateToken(
       {
         id: user.id,
         email: user.email,
@@ -63,7 +60,10 @@ export const verifyOtp: CustomRequestHandler = async (
       true,
     );
 
-    return res.status(200).json({ message: 'OTP verified successfully.', signInToken });
+    return res.status(200).json({
+      message: 'OTP verified successfully.',
+      signInToken,
+    });
   } catch (err: any) {
     logger.error(`Error in verifyOtp: ${err}`);
     next(err);
