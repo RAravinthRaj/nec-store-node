@@ -31,24 +31,31 @@ export const getAllProducts = async (_: any, args: GetAllProductsArgs, context: 
     if (productIds?.length) {
       filter._id = { $in: productIds };
     }
+
     if (categoryId) {
       filter['category._id'] = categoryId;
     }
+
     if (title?.trim()) {
       filter.title = { $regex: title.trim(), $options: 'i' };
     }
 
-    let products = await Product.find(filter).skip(skip).limit(limit);
+    let query = Product.find(filter).skip(skip).limit(limit);
+
+    if (orderBy && !isRecentProduct) {
+      query = query.sort({ title: orderBy === 'ASC' ? 1 : -1 });
+    }
+
+    let products = await query;
     const totalCount = await Product.countDocuments(filter);
 
     if (isRecentProduct && productIds?.length) {
       const orderMap = new Map(productIds.map((id, idx) => [id.toString(), idx]));
+
       products = products.sort(
         (a: any, b: any) =>
           (orderMap.get(a._id.toString()) ?? 0) - (orderMap.get(b._id.toString()) ?? 0),
       );
-    } else {
-      products = products.sort((a, b) => a.title.localeCompare(b.title));
     }
 
     return { products, totalCount };
